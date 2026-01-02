@@ -17,4 +17,5 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - name: Build and Test
+        working-directory: java-app
         run: mvn clean verify
