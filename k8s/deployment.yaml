@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: java-microservice
-        image: docker.io/your-org/java-microservice:latest
+        image: docker.io/${{ secrets.DOCKER_USERNAME }}/java-microservice:latest
         ports:
         - containerPort: 8080
           protocol: TCP
