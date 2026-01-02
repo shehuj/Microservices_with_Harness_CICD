@@ -129,7 +129,25 @@ After Terraform creates the secret placeholders, update them in Harness:
 2. Update `github_pat` with your GitHub Personal Access Token
 3. Update `docker_registry_password` with your Docker registry credentials
 
-### 7. Prepare Your Microservice Repository
+### 7. Configure GitHub Secrets (Required for GitHub Actions)
+
+To enable the Terraform GitHub Actions workflow, add these secrets to your repository:
+
+1. Go to your GitHub repository
+2. Navigate to **Settings > Secrets and variables > Actions**
+3. Click **New repository secret** and add each of the following:
+
+| Secret Name | Value | Example |
+|-------------|-------|---------|
+| `HARNESS_ACCOUNT_ID` | Your Harness account ID | `6ag5x-oJQWerhSczUHXcaw` |
+| `HARNESS_API_KEY` | Your Harness Platform API key | `pat.xxxxx...` |
+| `GITHUB_REPO` | Your GitHub repository | `shehuj/Microservices_with_Harness_CICD` |
+| `CLUSTER_PROJECT_ID` | Cloud provider project ID | `my-gcp-project` |
+| `DOCKER_USERNAME` | Docker registry username | `your-dockerhub-username` |
+
+**Note**: The GitHub Actions workflow uses these secrets via `TF_VAR_*` environment variables to avoid committing sensitive data to version control.
+
+### 8. Prepare Your Microservice Repository
 
 Your Java microservice repository should include:
 
@@ -149,7 +167,7 @@ your-java-microservice/
 └── README.md
 ```
 
-### 8. Test the Pipeline
+### 9. Test the Pipeline
 
 1. Create a Pull Request in your microservice repository
 2. The CI pipeline should trigger automatically
