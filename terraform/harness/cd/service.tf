@@ -15,8 +15,9 @@ resource "harness_platform_service" "service" {
             primary:
               type: DockerRegistry
               spec:
-                connectorRef: github-conn
-                imagePath: your-docker-repo/java-microservice
+                connectorRef: ${var.github_connector_id}
+                imagePath: ${var.docker_registry}/${var.service_name}
+                tag: <+input>
           manifests:
             - manifest:
                 type: Kubernetes
@@ -25,7 +26,7 @@ resource "harness_platform_service" "service" {
                   store:
                     type: Git
                     spec:
-                      connectorRef: github-conn
+                      connectorRef: ${var.github_connector_id}
                       gitFetchType: Branch
                       branch: main
                       paths:

@@ -12,3 +12,7 @@ variable "cluster_name" {}
 variable "cluster_region" {}
 variable "cluster_project_id" {}
 variable "service_name" {}
+variable "docker_registry" {
+  description = "Docker registry URL (e.g., docker.io, ghcr.io)"
+  default     = "docker.io"
+}

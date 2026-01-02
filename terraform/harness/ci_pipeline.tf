@@ -10,6 +10,13 @@ pipeline:
   identifier: ci_java_microservice
   projectIdentifier: ${var.project_id}
   orgIdentifier: ${var.org_id}
+  variables:
+    - name: DOCKER_REGISTRY
+      type: String
+      value: ${var.docker_registry}
+    - name: SERVICE_NAME
+      type: String
+      value: ${var.service_name}
   stages:
     - stage:
         name: Build
@@ -30,14 +37,18 @@ pipeline:
                   name: Build Docker
                   spec:
                     shell: Bash
+                    envVariables:
+                      IMAGE: <+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>:<+pipeline.sequenceId>
                     command: |
-                      docker build -t \${IMAGE} .
+                      docker build -t \$IMAGE .
               - step:
                   type: Run
                   name: Push Docker
                   spec:
                     shell: Bash
+                    envVariables:
+                      IMAGE: <+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>:<+pipeline.sequenceId>
                     command: |
-                      docker push \${IMAGE}
+                      docker push \$IMAGE
  EOT
 }
