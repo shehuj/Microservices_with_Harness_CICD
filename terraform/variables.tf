@@ -1,6 +1,7 @@
 variable "harness_account_id" {
   description = "Harness account identifier"
   type        = string
+  default = "6ag5x-oJQWerhSczUHXcaw"
 }
 
 variable "harness_api_key" {
@@ -11,7 +12,7 @@ variable "harness_api_key" {
 variable "project_id" {
   description = "Harness project identifier"
   type        = string
-  default     = "java-microservice"
+  default     = "belenshi"
 }
 
 variable "org_id" {
@@ -23,6 +24,7 @@ variable "org_id" {
 variable "github_repo" {
   description = "GitHub repository in format: owner/repo"
   type        = string
+  default     = "shehuj/Microservices_with_Harness_CICD"
 
   validation {
     condition     = can(regex("^[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$", var.github_repo))
@@ -45,7 +47,7 @@ variable "k8s_connector_id" {
 variable "namespace" {
   description = "Kubernetes namespace for deployments"
   type        = string
-  default     = "default"
+  default     = "harness"
 
   validation {
     condition     = can(regex("^[a-z0-9]([-a-z0-9]*[a-z0-9])?$", var.namespace))
@@ -56,11 +58,13 @@ variable "namespace" {
 variable "cluster_name" {
   description = "Kubernetes cluster name"
   type        = string
+  default = "cart"
 }
 
 variable "cluster_region" {
   description = "Cloud region where the cluster is located"
   type        = string
+  default     = "us-east-1"
 }
 
 variable "cluster_project_id" {
