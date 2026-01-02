@@ -28,7 +28,7 @@ resource "harness_platform_service" "service" {
                     spec:
                       connectorRef: ${var.github_connector_id}
                       gitFetchType: Branch
-                      branch: main
+                      branch: ${var.default_branch}
                       paths:
                         - k8s/deployment.yaml
                         - k8s/service.yaml

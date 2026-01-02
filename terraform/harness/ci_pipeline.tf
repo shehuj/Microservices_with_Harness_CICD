@@ -10,6 +10,12 @@ pipeline:
   identifier: ci_java_microservice
   projectIdentifier: ${var.project_id}
   orgIdentifier: ${var.org_id}
+  properties:
+    ci:
+      codebase:
+        connectorRef: ${var.github_connector_id}
+        repoName: ${var.github_repo}
+        build: <+input>
   variables:
     - name: DOCKER_REGISTRY
       type: String
@@ -23,6 +29,12 @@ pipeline:
         identifier: Build
         type: CI
         spec:
+          cloneCodebase: true
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: ${var.k8s_connector_id}
+              namespace: ${var.namespace}
           execution:
             steps:
               - step:

@@ -14,6 +14,6 @@ resource "harness_platform_infrastructure" "infra" {
       type: KubernetesDirect
       spec:
         connectorRef: ${var.k8s_connector_id}
-        namespace: default
+        namespace: ${var.namespace}
   EOT
 }
