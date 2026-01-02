@@ -20,15 +20,16 @@ output "cd_pipeline_identifier" {
 }
 
 # Connector Outputs
-output "github_connector_id" {
-  description = "ID of the GitHub connector"
-  value       = harness_platform_connector_github.github.id
-}
+# GitHub connector disabled due to provider bug
+# output "github_connector_id" {
+#   description = "ID of the GitHub connector"
+#   value       = harness_platform_connector_github.github.id
+# }
 
-output "github_connector_identifier" {
-  description = "Identifier of the GitHub connector"
-  value       = harness_platform_connector_github.github.identifier
-}
+# output "github_connector_identifier" {
+#   description = "Identifier of the GitHub connector"
+#   value       = harness_platform_connector_github.github.identifier
+# }
 
 output "k8s_connector_id" {
   description = "ID of the Kubernetes connector"
@@ -83,12 +84,13 @@ output "environment_identifier" {
   value       = harness_platform_environment.env.identifier
 }
 
-output "infrastructure_id" {
-  description = "ID of the infrastructure definition"
-  value       = harness_platform_infrastructure.infra.id
-}
+# Infrastructure disabled due to provider bug
+# output "infrastructure_id" {
+#   description = "ID of the infrastructure definition"
+#   value       = harness_platform_infrastructure.infra.id
+# }
 
-output "infrastructure_identifier" {
-  description = "Identifier of the infrastructure definition"
-  value       = harness_platform_infrastructure.infra.identifier
-}
+# output "infrastructure_identifier" {
+#   description = "Identifier of the infrastructure definition"
+#   value       = harness_platform_infrastructure.infra.identifier
+# }
