@@ -20,6 +20,7 @@ github_repo = "your_org/your-repository"
 # You can customize these identifiers if needed
 github_connector_id = "github-conn"
 k8s_connector_id    = "k8s-conn"
+docker_connector_id = "docker-conn"
 
 # Kubernetes Configuration
 # Namespace where the microservice will be deployed
@@ -36,8 +37,18 @@ cluster_project_id = "my-cloud-project-id"
 service_name = "java-microservice"
 
 # Docker Registry Configuration
-# Options: docker.io, ghcr.io, gcr.io, etc.
+# Base path for Docker images (registry domain)
 docker_registry = "docker.io"
+
+# Docker registry username (e.g., your Docker Hub username)
+docker_username = "your-dockerhub-username"
+
+# Docker registry URL (API endpoint)
+# For Docker Hub: https://index.docker.io/v1/
+# For GitHub Container Registry: https://ghcr.io
+# For Google Container Registry: https://gcr.io
+# For Azure Container Registry: https://yourregistry.azurecr.io
+docker_registry_url = "https://index.docker.io/v1/"
 
 # Git Configuration
 # Default branch for CI/CD pipelines (usually "main" or "master")

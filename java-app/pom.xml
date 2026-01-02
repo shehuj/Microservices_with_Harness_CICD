@@ -55,6 +55,12 @@
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>
 
+    <!-- Spring Boot Actuator for health checks and monitoring -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
     <!-- Webjars for static assets -->
     <dependency>
       <groupId>org.webjars</groupId>

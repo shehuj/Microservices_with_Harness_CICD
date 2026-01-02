@@ -15,7 +15,7 @@ resource "harness_platform_service" "service" {
             primary:
               type: DockerRegistry
               spec:
-                connectorRef: ${var.github_connector_id}
+                connectorRef: ${var.docker_connector_id}
                 imagePath: ${var.docker_registry}/${var.service_name}
                 tag: <+input>
           manifests:
