@@ -14,7 +14,8 @@ terraform {
     key            = "harness-cicd/terraform.tfstate"
     region         = "us-east-1"
     encrypt        = true
-    use_lockfile = "dyning_table"
+    use_lockfile = yes
+    dynamodb_table = "dyning_table"
   }
 }
 
