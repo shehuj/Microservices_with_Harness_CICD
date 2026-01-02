@@ -16,8 +16,8 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.5.3.RELEASE</version> <!-- correct parent version confirmed  [oai_citation:0‡mvnrepository.com](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent/1.5.3.RELEASE?utm_source=chatgpt.com) -->
-    <relativePath/> <!-- uses central repo -->
+    <version>1.5.3.RELEASE</version>
+    <relativePath/>
   </parent>
 
   <properties>
@@ -28,29 +28,34 @@
   </properties>
 
   <dependencies>
-    <!-- Spring Boot Starters -->
+    <!-- Spring Boot Starters with managed versions -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-rest</artifactId>
     </dependency>
+
+    <!-- Only include Spring Boot Starter Security -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>
 
-    <!-- Webjars -->
+    <!-- Webjars for static assets -->
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>bootstrap</artifactId>
@@ -62,12 +67,13 @@
       <version>2.1.4</version>
     </dependency>
 
-    <!-- Database Drivers -->
+    <!-- Databases -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
     </dependency>
+
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
@@ -81,38 +87,22 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- AOP support -->
+    <!-- AspectJ -->
     <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjweaver</artifactId>
       <version>${aspectj.version}</version>
     </dependency>
-
-    <!-- JAXB -->
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>2.2.8</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-core</artifactId>
-      <version>2.2.8-b01</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>2.2.8-b01</version>
-    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <!-- Spring Boot plugin -->
+      <!-- Spring Boot Maven Plugin -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
+
       <!-- JaCoCo plugin -->
       <plugin>
         <groupId>org.jacoco</groupId>
@@ -123,16 +113,9 @@
             <id>prepare-agent</id>
             <goals><goal>prepare-agent</goal></goals>
           </execution>
-          <execution>
-            <id>report</id>
-            <phase>test</phase>
-            <goals><goal>report</goal></goals>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
+
 </project>
