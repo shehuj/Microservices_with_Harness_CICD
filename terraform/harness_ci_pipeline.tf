@@ -17,6 +17,11 @@ pipeline:
         repoName: ${var.github_repo}
         build: <+input>
   variables:
+    - name: branch
+      type: String
+      description: Branch to build from
+      required: true
+      value: <+input>.default(main).allowedValues(main,dev)
     - name: DOCKER_REGISTRY
       type: String
       value: ${var.docker_registry}

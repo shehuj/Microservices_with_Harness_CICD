@@ -10,6 +10,18 @@ pipeline:
   identifier: cd_deploy_java_microservice
   projectIdentifier: ${var.project_id}
   orgIdentifier: ${var.org_id}
+  properties:
+    ci:
+      codebase:
+        connectorRef: ${var.github_connector_id}
+        repoName: ${var.github_repo}
+        build: <+input>
+  variables:
+    - name: branch
+      type: String
+      description: Branch to deploy from
+      required: true
+      value: <+input>.default(main).allowedValues(main,dev)
   stages:
     - stage:
         name: Deploy to Staging
@@ -30,8 +42,12 @@ pipeline:
           environment:
             environmentRef: staging
             deployToAll: false
-            infrastructureDefinitions:
-              - identifier: staging_infra
+            infrastructureDefinition:
+              type: KubernetesDirect
+              spec:
+                connectorRef: ${var.k8s_connector_id}
+                namespace: ${var.namespace}
+                releaseName: release-<+INFRA_KEY>
           execution:
             steps:
               - step:
