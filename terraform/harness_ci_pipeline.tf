@@ -39,15 +39,21 @@ pipeline:
             steps:
               - step:
                   type: Run
-                  name: Build & Test
+                  name: Build and Test
+                  identifier: build_test
                   spec:
+                    connectorRef: ${var.k8s_connector_id}
+                    image: maven:3-openjdk-8
                     shell: Bash
                     command: |
                       mvn clean verify
               - step:
                   type: Run
                   name: Build Docker
+                  identifier: build_docker
                   spec:
+                    connectorRef: ${var.k8s_connector_id}
+                    image: docker:latest
                     shell: Bash
                     envVariables:
                       IMAGE: <+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>:<+pipeline.sequenceId>
@@ -56,11 +62,20 @@ pipeline:
               - step:
                   type: Run
                   name: Push Docker
+                  identifier: push_docker
                   spec:
+                    connectorRef: ${var.k8s_connector_id}
+                    image: docker:latest
                     shell: Bash
                     envVariables:
                       IMAGE: <+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>:<+pipeline.sequenceId>
                     command: |
                       docker push \$IMAGE
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: Abort
  EOT
 }

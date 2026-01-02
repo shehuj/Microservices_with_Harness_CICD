@@ -43,23 +43,23 @@ output "k8s_connector_identifier" {
 # Trigger Outputs
 output "github_trigger_id" {
   description = "ID of the GitHub PR trigger"
-  value       = harness_platform_trigger.pr_trigger.id
+  value       = harness_platform_triggers.pr_trigger.id
 }
 
 output "github_trigger_identifier" {
   description = "Identifier of the GitHub PR trigger"
-  value       = harness_platform_trigger.pr_trigger.identifier
+  value       = harness_platform_triggers.pr_trigger.identifier
 }
 
 # Secret Outputs
 output "github_secret_id" {
   description = "ID of the GitHub PAT secret"
-  value       = harness_platform_encrypted_text.github_pat.id
+  value       = harness_platform_secret_text.github_pat.id
 }
 
 output "registry_secret_id" {
   description = "ID of the Docker registry password secret"
-  value       = harness_platform_encrypted_text.docker_registry_password.id
+  value       = harness_platform_secret_text.docker_registry_password.id
 }
 
 # CD Resource Outputs
