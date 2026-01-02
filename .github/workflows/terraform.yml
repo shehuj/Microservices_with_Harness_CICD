@@ -79,7 +79,6 @@ jobs:
     - name: Terraform Init
       run: terraform init
       env:
-        TF_VAR_harness_account_id: ${{ secrets.HARNESS_ACCOUNT_ID }}
         TF_VAR_harness_api_key: ${{ secrets.HARNESS_API_KEY }}
 
     # Checks that all Terraform configuration files adhere to a canonical format
@@ -90,11 +89,7 @@ jobs:
     - name: Terraform Plan
       run: terraform plan -input=false
       env:
-        TF_VAR_harness_account_id: ${{ secrets.HARNESS_ACCOUNT_ID }}
         TF_VAR_harness_api_key: ${{ secrets.HARNESS_API_KEY }}
-        TF_VAR_github_repo: ${{ secrets.GITHUB_REPO }}
-        TF_VAR_cluster_project_id: ${{ secrets.CLUSTER_PROJECT_ID }}
-        TF_VAR_docker_username: ${{ secrets.DOCKER_USERNAME }}
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
@@ -102,8 +97,4 @@ jobs:
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: terraform apply -auto-approve -input=false
       env:
-        TF_VAR_harness_account_id: ${{ secrets.HARNESS_ACCOUNT_ID }}
         TF_VAR_harness_api_key: ${{ secrets.HARNESS_API_KEY }}
-        TF_VAR_github_repo: ${{ secrets.GITHUB_REPO }}
-        TF_VAR_cluster_project_id: ${{ secrets.CLUSTER_PROJECT_ID }}
-        TF_VAR_docker_username: ${{ secrets.DOCKER_USERNAME }}

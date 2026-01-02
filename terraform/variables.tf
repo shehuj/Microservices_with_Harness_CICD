@@ -1,6 +1,7 @@
 variable "harness_account_id" {
   description = "Harness account identifier"
   type        = string
+  default     = "6ag5x-oJQWerhSczUHXcaw"
 }
 
 variable "harness_api_key" {

@@ -131,21 +131,19 @@ After Terraform creates the secret placeholders, update them in Harness:
 
 ### 7. Configure GitHub Secrets (Required for GitHub Actions)
 
-To enable the Terraform GitHub Actions workflow, add these secrets to your repository:
+To enable the Terraform GitHub Actions workflow, add your Harness API key as a GitHub secret:
 
 1. Go to your GitHub repository
 2. Navigate to **Settings > Secrets and variables > Actions**
-3. Click **New repository secret** and add each of the following:
+3. Click **New repository secret** and add:
 
-| Secret Name | Value | Example |
-|-------------|-------|---------|
-| `HARNESS_ACCOUNT_ID` | Your Harness account ID | `6ag5x-oJQWerhSczUHXcaw` |
-| `HARNESS_API_KEY` | Your Harness Platform API key | `pat.xxxxx...` |
-| `GITHUB_REPO` | Your GitHub repository | `shehuj/Microservices_with_Harness_CICD` |
-| `CLUSTER_PROJECT_ID` | Cloud provider project ID | `my-gcp-project` |
-| `DOCKER_USERNAME` | Docker registry username | `your-dockerhub-username` |
+| Secret Name | Value | Required |
+|-------------|-------|----------|
+| `HARNESS_API_KEY` | Your Harness Platform API key | Yes |
 
-**Note**: The GitHub Actions workflow uses these secrets via `TF_VAR_*` environment variables to avoid committing sensitive data to version control.
+All other configuration values (account ID, repository, cluster details) are set as default values in `variables.tf` and can be overridden in your local `terraform.tfvars` file for development.
+
+**Note**: The GitHub Actions workflow uses the `TF_VAR_harness_api_key` environment variable to securely pass the API key to Terraform without committing it to version control.
 
 ### 8. Prepare Your Microservice Repository
 
