@@ -1,6 +1,7 @@
 variable "harness_account_id" {
   description = "Harness account identifier"
   type        = string
+  sensitive = true
   default     = "6ag5x-oJQWerhSczUHXcaw"
 }
 
@@ -8,6 +9,7 @@ variable "harness_api_key" {
   description = "Harness Platform API key"
   type        = string
   sensitive   = true
+  default = "pat.6ag5x-oJQWerhSczUHXcaw.69582fccec5f574a10036b18.ZHJZbuaZgAQhxMIbNL57"
 }
 variable "project_id" {
   description = "Harness project identifier"
@@ -67,10 +69,13 @@ variable "cluster_region" {
   default     = "us-east-1"
 }
 
+/*
 variable "cluster_project_id" {
   description = "Cloud provider project ID"
   type        = string
 }
+
+*/
 
 variable "service_name" {
   description = "Name of the microservice"
