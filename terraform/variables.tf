@@ -23,6 +23,11 @@ variable "org_id" {
 variable "github_repo" {
   description = "GitHub repository in format: owner/repo"
   type        = string
+
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$", var.github_repo))
+    error_message = "GitHub repository must be in format 'owner/repo'."
+  }
 }
 
 variable "github_connector_id" {
@@ -41,6 +46,11 @@ variable "namespace" {
   description = "Kubernetes namespace for deployments"
   type        = string
   default     = "default"
+
+  validation {
+    condition     = can(regex("^[a-z0-9]([-a-z0-9]*[a-z0-9])?$", var.namespace))
+    error_message = "Namespace must be a valid Kubernetes namespace name (lowercase alphanumeric and hyphens only)."
+  }
 }
 
 variable "cluster_name" {

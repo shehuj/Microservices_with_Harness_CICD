@@ -4,7 +4,7 @@ resource "harness_platform_pipeline" "ci_pipeline" {
   project_id = var.project_id
   org_id     = var.org_id
 
-  yaml = <<EOT
+  yaml = <<-EOT
 pipeline:
   name: CI Java Microservice
   identifier: ci_java_microservice
