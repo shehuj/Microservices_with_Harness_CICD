@@ -1,0 +1,49 @@
+# Harness Platform Configuration
+# Get your account ID from: https://app.harness.io/ng/account/<account-id>/settings/overview
+harness_account_id = "YOUR_HARNESS_ACCOUNT_ID"
+
+# Create API key at: https://app.harness.io/ng/account/<account-id>/settings/resources/apikeys
+# IMPORTANT: Keep this secret! Do NOT commit the actual API key to version control
+harness_api_key = "YOUR_HARNESS_PLATFORM_API_KEY"
+
+# Organization and Project Configuration
+# Use "default" for the default organization, or specify your custom org
+org_id     = "default"
+project_id = "java-microservice"
+
+# GitHub Configuration
+# Format: "organization/repository-name"
+# Example: "mycompany/my-microservice"
+github_repo = "your_org/your-repository"
+
+# Connector IDs (these will be created by Terraform)
+# You can customize these identifiers if needed
+github_connector_id = "github-conn"
+k8s_connector_id    = "k8s-conn"
+
+# Kubernetes Configuration
+# Namespace where the microservice will be deployed
+namespace = "default"
+
+# Cluster details (adjust based on your cloud provider)
+# For GKE, EKS, or AKS clusters
+cluster_name       = "my-k8s-cluster"
+cluster_region     = "us-central1"
+cluster_project_id = "my-cloud-project-id"
+
+# Microservice Configuration
+# Name of your microservice application
+service_name = "java-microservice"
+
+# Docker Registry Configuration
+# Options: docker.io, ghcr.io, gcr.io, etc.
+docker_registry = "docker.io"
+
+# Git Configuration
+# Default branch for CI/CD pipelines (usually "main" or "master")
+default_branch = "main"
+
+# Harness Delegate Configuration
+# Tag/selector for the Harness delegate that will execute builds and deployments
+# This must match the selector configured on your Harness delegate
+delegate_selector = "k8s"

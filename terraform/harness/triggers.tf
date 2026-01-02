@@ -10,8 +10,8 @@ resource "harness_platform_trigger" "pr_trigger" {
       type = "PullRequest"
       spec {
         repo_name     = var.github_repo
-        actions       = ["opened","reopened","synchronize"]
-        target_branch = "main"
+        actions       = ["opened", "reopened", "synchronize"]
+        target_branch = var.default_branch
       }
     }
   }

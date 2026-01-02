@@ -16,6 +16,9 @@ pipeline:
         identifier: Deploy_Staging
         type: Deployment
         spec:
+          deploymentType: Kubernetes
+          service:
+            serviceRef: java_microservice
           environment:
             environmentRef: staging
           infrastructure:
@@ -23,25 +26,14 @@ pipeline:
           execution:
             steps:
               - step:
-                  name: Deploy Kubernetes
-                  type: KubernetesApply
+                  name: Rolling Deployment
+                  identifier: rolling_deployment
+                  type: K8sRollingDeploy
                   spec:
-                    manifests:
-                      - manifest:
-                          type: Kubernetes
-                          identifier: k8s_deployment
-                          spec:
-                            store:
-                              type: Git
-                              spec:
-                                connectorRef: ${var.github_connector_id}
-                                gitFetchType: Branch
-                                branch: main
-                                paths:
-                                  - k8s/deployment.yaml
-                                  - k8s/service.yaml
+                    skipDryRun: false
               - step:
                   name: Verify Deployment
+                  identifier: verify_deployment
                   type: Wait
                   spec:
                     duration: "2m"
