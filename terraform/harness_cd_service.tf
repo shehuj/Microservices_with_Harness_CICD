@@ -20,7 +20,7 @@ resource "harness_platform_service" "service" {
                 tag: <+input>
           manifests:
             - manifest:
-                type: Kubernetes
+                type: K8sManifest
                 identifier: k8s_manifest
                 spec:
                   store:

@@ -35,13 +35,13 @@ variable "github_repo" {
 variable "github_connector_id" {
   description = "Identifier for the GitHub connector"
   type        = string
-  default     = "github-conn"
+  default     = "github_conn"
 }
 
 variable "k8s_connector_id" {
   description = "Identifier for the Kubernetes connector"
   type        = string
-  default     = "k8s-conn"
+  default     = "k8s_conn"
 }
 
 variable "namespace" {
@@ -102,7 +102,7 @@ variable "delegate_selector" {
 variable "docker_connector_id" {
   description = "Identifier for the Docker registry connector"
   type        = string
-  default     = "docker-conn"
+  default     = "docker_conn"
 }
 
 variable "docker_registry_url" {

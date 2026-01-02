@@ -19,10 +19,19 @@ pipeline:
           deploymentType: Kubernetes
           service:
             serviceRef: java_microservice
+            serviceInputs:
+              serviceDefinition:
+                type: Kubernetes
+                spec:
+                  artifacts:
+                    primary:
+                      primaryArtifactRef: <+input>
+                      sources: <+input>
           environment:
             environmentRef: staging
-          infrastructure:
-            infrastructureDefinitionRef: staging_k8s
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: staging_infra
           execution:
             steps:
               - step:
@@ -37,5 +46,11 @@ pipeline:
                   type: Wait
                   spec:
                     duration: "2m"
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
   EOT
 }
