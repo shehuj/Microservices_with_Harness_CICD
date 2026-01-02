@@ -80,6 +80,14 @@ cluster_project_id = "my-gcp-project"
 # Service Configuration
 service_name    = "my-java-service"
 docker_registry = "docker.io"  # or ghcr.io, gcr.io, etc.
+
+# Docker Registry Configuration
+docker_username     = "your-dockerhub-username"
+docker_registry_url = "https://index.docker.io/v1/"  # for Docker Hub
+# For other registries:
+# - GitHub Container Registry: "https://ghcr.io"
+# - Google Container Registry: "https://gcr.io"
+# - Azure Container Registry: "https://yourregistry.azurecr.io"
 ```
 
 ### 4. Configure Backend (Optional but Recommended)
@@ -216,6 +224,25 @@ Steps:
 2. **Verification**: Waits for deployment stability
 3. **Health Check**: Validates application endpoints
 
+## Recent Changes
+
+### Configuration Fixes (2026-01-02)
+
+The following issues have been fixed:
+
+1. **Port Alignment**: Updated application port from 8070 to 8080 to match Kubernetes deployment configuration
+2. **Health Checks**: Added Spring Boot Actuator dependency and configured health endpoints at `/health` for Spring Boot 1.5.x compatibility
+3. **Docker Registry Connector**: Added proper Docker registry connector in Terraform instead of incorrectly using GitHub connector for Docker images
+4. **GitHub Actions Fix**: Corrected syntax error in terraform.yml workflow and added proper working directory
+5. **Terraform Variables**: Added new variables for Docker registry configuration (`docker_connector_id`, `docker_registry_url`, `docker_username`)
+
+### Known Limitations
+
+1. **Spring Boot Version**: The shopping cart demo app uses Spring Boot 1.5.3.RELEASE (2017), which is EOL and may contain security vulnerabilities. Consider upgrading to Spring Boot 2.x or 3.x for production use.
+2. **Hardcoded Credentials**: Admin credentials are hardcoded in application.properties. Use environment variables for production deployments.
+3. **Auto-Apply Risk**: The GitHub Actions workflow automatically applies Terraform changes on push to main without manual approval. Consider adding a manual approval step for production environments.
+4. **Resource Limits**: Kubernetes deployment has conservative memory limits (512Mi) that may need adjustment for production Java workloads.
+
 ## Configuration Reference
 
 ### Variables
@@ -229,12 +256,15 @@ Steps:
 | `github_repo` | GitHub repository path | `myorg/my-service` |
 | `github_connector_id` | GitHub connector ID | `github-conn` |
 | `k8s_connector_id` | Kubernetes connector ID | `k8s-conn` |
+| `docker_connector_id` | Docker registry connector ID | `docker-conn` |
+| `docker_registry_url` | Docker registry API URL | `https://index.docker.io/v1/` |
+| `docker_username` | Docker registry username | `your-dockerhub-user` |
 | `namespace` | K8s namespace | `production` |
 | `cluster_name` | Kubernetes cluster name | `prod-cluster-01` |
 | `cluster_region` | Cloud region | `us-central1` |
 | `cluster_project_id` | Cloud project ID | `my-gcp-project` |
 | `service_name` | Microservice name | `user-service` |
-| `docker_registry` | Docker registry URL | `docker.io` |
+| `docker_registry` | Docker registry base path | `docker.io` |
 
 ### Secrets
 
