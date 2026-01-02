@@ -1,7 +1,7 @@
 variable "harness_account_id" {
   description = "Harness account identifier"
   type        = string
-  default = "6ag5x-oJQWerhSczUHXcaw"
+  default     = "6ag5x-oJQWerhSczUHXcaw"
 }
 
 variable "harness_api_key" {
@@ -58,7 +58,7 @@ variable "namespace" {
 variable "cluster_name" {
   description = "Kubernetes cluster name"
   type        = string
-  default = "cart"
+  default     = "cart"
 }
 
 variable "cluster_region" {

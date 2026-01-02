@@ -233,8 +233,13 @@ The following issues have been fixed:
 1. **Port Alignment**: Updated application port from 8070 to 8080 to match Kubernetes deployment configuration
 2. **Health Checks**: Added Spring Boot Actuator dependency and configured health endpoints at `/health` for Spring Boot 1.5.x compatibility
 3. **Docker Registry Connector**: Added proper Docker registry connector in Terraform instead of incorrectly using GitHub connector for Docker images
-4. **GitHub Actions Fix**: Corrected syntax error in terraform.yml workflow and added proper working directory
+4. **GitHub Actions Fixes**:
+   - Corrected syntax error in terraform.yml workflow (`refs/heads/main`)
+   - Added proper working directory for Terraform commands
+   - Updated `hashicorp/setup-terraform` from v1 to v3 to fix deprecated set-output warnings
 5. **Terraform Variables**: Added new variables for Docker registry configuration (`docker_connector_id`, `docker_registry_url`, `docker_username`)
+6. **Backend Configuration**: Commented out S3 backend by default to use local state (simpler for initial setup)
+7. **Terraform Formatting**: Applied proper formatting to all Terraform files
 
 ### Known Limitations
 
