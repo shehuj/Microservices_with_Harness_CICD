@@ -131,19 +131,24 @@ After Terraform creates the secret placeholders, update them in Harness:
 
 ### 7. Configure GitHub Secrets (Required for GitHub Actions)
 
-To enable the Terraform GitHub Actions workflow, add your Harness API key as a GitHub secret:
+To enable the Terraform GitHub Actions workflow with S3 backend, add these secrets to your repository:
 
 1. Go to your GitHub repository
 2. Navigate to **Settings > Secrets and variables > Actions**
-3. Click **New repository secret** and add:
+3. Click **New repository secret** and add each of these:
 
-| Secret Name | Value | Required |
-|-------------|-------|----------|
-| `HARNESS_API_KEY` | Your Harness Platform API key | Yes |
+| Secret Name | Value | Required | Purpose |
+|-------------|-------|----------|---------|
+| `HARNESS_API_KEY` | Your Harness Platform API key | Yes | Harness authentication |
+| `AWS_ACCESS_KEY_ID` | Your AWS access key ID | Yes | S3 backend access |
+| `AWS_SECRET_ACCESS_KEY` | Your AWS secret access key | Yes | S3 backend access |
+
+**Note**: The workflow uses the S3 backend configured in `terraform/backend.tf`:
+- Bucket: `ec2-shutdown-lambda-bucket`
+- DynamoDB table: `dyning_table` (for state locking)
+- Region: `us-east-1`
 
 All other configuration values (account ID, repository, cluster details) are set as default values in `variables.tf` and can be overridden in your local `terraform.tfvars` file for development.
-
-**Note**: The GitHub Actions workflow uses the `TF_VAR_harness_api_key` environment variable to securely pass the API key to Terraform without committing it to version control.
 
 ### 8. Prepare Your Microservice Repository
 
