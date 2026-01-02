@@ -5,6 +5,7 @@ Automate Java microservice deployment using Harness CI/CD pipelines provisioned 
 ## Overview
 
 This repository provides Infrastructure-as-Code (IaC) for setting up:
+
 - **CI Pipeline**: Automatically triggered by GitHub PRs, builds and tests Java applications, creates Docker images
 - **CD Pipeline**: Deploys containerized applications to Kubernetes clusters
 - **Connectors**: Integrates GitHub and Kubernetes with Harness
@@ -15,6 +16,7 @@ This repository provides Infrastructure-as-Code (IaC) for setting up:
 Before you begin, ensure you have:
 
 ### Required Tools
+
 - [Terraform](https://www.terraform.io/downloads) >= 1.0
 - [Harness Account](https://app.harness.io) (Free tier available)
 - [GitHub Account](https://github.com) with a repository for your microservice
@@ -22,6 +24,7 @@ Before you begin, ensure you have:
 - [Docker](https://www.docker.com/get-started) for local testing
 
 ### Required Access
+
 - Harness Platform API Key with appropriate permissions
 - GitHub Personal Access Token (PAT) with repo access
 - Kubernetes cluster access with kubectl configured
@@ -39,7 +42,7 @@ cd Microservices_with_Harness_CICD
 ### 2. Configure Harness
 
 1. **Get Harness Account ID**:
-   - Log in to Harness at https://app.harness.io
+   - Log in to Harness at <https://app.harness.io>
    - Navigate to Account Settings > Overview
    - Copy your Account ID
 
@@ -50,6 +53,7 @@ cd Microservices_with_Harness_CICD
    - Copy the generated key
 
 3. **Install Harness Delegate** (if not already installed):
+
    ```bash
    # Follow instructions at:
    # https://developer.harness.io/docs/platform/delegates/install-delegates/overview
@@ -126,7 +130,8 @@ Your Java microservice repository should include:
 3. **src/** - Your application source code
 
 Example structure:
-```
+
+```text
 your-java-microservice/
 ├── pom.xml
 ├── Dockerfile
@@ -145,7 +150,7 @@ your-java-microservice/
 
 ## Architecture
 
-```
+```text
 ┌─────────────┐         ┌──────────────┐         ┌─────────────┐
 │   GitHub    │────────>│   Harness    │────────>│ Kubernetes  │
 │ (Source Code)│  Webhook│   CI/CD      │ Deploy  │  Cluster    │
@@ -161,7 +166,7 @@ your-java-microservice/
 
 ## Repository Structure
 
-```
+```text
 Microservices_with_Harness_CICD/
 ├── README.md                          # This file
 ├── Dockerfile.example                 # Example Dockerfile for Java app
@@ -196,6 +201,7 @@ Microservices_with_Harness_CICD/
 Triggered on: Pull Request to `main` branch
 
 Steps:
+
 1. **Build & Test**: Runs `mvn clean verify`
 2. **Build Docker**: Creates container image with tag `<registry>/<service>:<build-id>`
 3. **Push Docker**: Pushes image to configured Docker registry
@@ -205,6 +211,7 @@ Steps:
 Triggered: Manually or after successful CI
 
 Steps:
+
 1. **Deploy to Staging**: Applies Kubernetes manifests from Git
 2. **Verification**: Waits for deployment stability
 3. **Health Check**: Validates application endpoints
@@ -214,7 +221,7 @@ Steps:
 ### Variables
 
 | Variable | Description | Example |
-|----------|-------------|---------|
+| -------- | ----------- | ------- |
 | `harness_account_id` | Harness account identifier | `abc123xyz` |
 | `harness_api_key` | Harness Platform API key | `pat.xyz...` |
 | `org_id` | Harness organization | `default` |
@@ -241,11 +248,13 @@ The following secrets need to be configured in Harness:
 ### Terraform Apply Fails
 
 **Issue**: Authentication error with Harness
-```
+
+```text
 Error: Unable to authenticate with Harness
 ```
 
 **Solution**:
+
 - Verify `harness_account_id` is correct
 - Ensure `harness_api_key` is valid and not expired
 - Check API key has necessary permissions
@@ -255,6 +264,7 @@ Error: Unable to authenticate with Harness
 **Issue**: Pull requests don't trigger the CI pipeline
 
 **Solution**:
+
 - Verify GitHub webhook is configured correctly
 - Check Harness trigger settings in the UI
 - Ensure GitHub connector has valid PAT
@@ -265,6 +275,7 @@ Error: Unable to authenticate with Harness
 **Issue**: `unauthorized: authentication required`
 
 **Solution**:
+
 - Update `docker_registry_password` secret in Harness
 - Ensure Docker registry URL is correct
 - Verify Docker registry supports the authentication method
@@ -274,6 +285,7 @@ Error: Unable to authenticate with Harness
 **Issue**: Unable to deploy to cluster
 
 **Solution**:
+
 - Verify Kubernetes connector is configured correctly
 - Check Harness Delegate is running and has cluster access
 - Ensure namespace exists in the cluster
@@ -284,6 +296,7 @@ Error: Unable to authenticate with Harness
 **Issue**: CI pipeline fails at Docker build step
 
 **Solution**: This issue has been fixed in the latest version. If you're using an older version:
+
 - Update `terraform/harness/ci_pipeline.tf` to use the fixed version
 - Run `terraform apply` to update the pipeline
 
@@ -312,6 +325,7 @@ This project is licensed under the GNU General Public License v3.0 - see the LIC
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: [Create an issue](https://github.com/your-org/Microservices_with_Harness_CICD/issues)
-- Harness Docs: https://developer.harness.io
-- Terraform Docs: https://registry.terraform.io/providers/harness/harness/latest/docs
+- Harness Docs: <https://developer.harness.io>
+- Terraform Docs: <https://registry.terraform.io/providers/harness/harness/latest/docs>
