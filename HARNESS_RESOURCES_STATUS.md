@@ -42,17 +42,36 @@ These resources can be created manually in the Harness UI:
 2. **Docker Registry Connector**: Same URL as above
 3. **Infrastructure Definition**: Can be defined inline in the CD pipeline
 
-## 📊 Terraform State Issues
+## 📊 Terraform State Management
 
-Due to the provider bug causing apply failures, some resources exist in Harness but not in the Terraform state file. This is expected behavior when Terraform encounters errors during apply.
+All resources exist in Harness but are not currently in the Terraform state file due to the provider bug causing apply failures during initial creation.
 
 **Current State:**
-- Kubernetes Connector: ✓ In state
-- Environment: ✓ In state
-- Service: ✓ In state
+- Kubernetes Connector: ⚠️ Exists in Harness but not in state
+- Environment: ⚠️ Exists in Harness but not in state
+- Service: ⚠️ Exists in Harness but not in state
 - Secrets: ⚠️ Exist in Harness but not in state
 - Pipelines: ⚠️ Exist in Harness but not in state
 - Trigger: ⚠️ Exists in Harness but not in state
+
+### Option 1: Import Resources into Terraform State (Recommended)
+
+Run the import script to add existing resources to Terraform state:
+
+```bash
+cd terraform
+./import_harness_resources.sh
+```
+
+After importing, verify with:
+```bash
+terraform state list
+terraform plan  # Should show "No changes"
+```
+
+### Option 2: Manage Outside Terraform
+
+Simply use the existing resources in Harness and don't manage them with Terraform. This is fine for initial setup or if you prefer UI-based management.
 
 ## 🎯 Next Steps
 
