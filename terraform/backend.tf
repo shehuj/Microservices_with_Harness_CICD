@@ -8,16 +8,16 @@
 
 # Option 1: S3 Backend (AWS)
 # Recommended for AWS environments
-terraform {
-  backend "s3" {
-    bucket         = "ec2-shutdown-lambda-bucket"
-    key            = "harness-cicd/terraform.tfstate"
-    region         = "us-east-1"
-    encrypt        = true
-#   use_lockfile = yes
-    dynamodb_table = "dyning_table"
-  }
-}
+# Uncomment the block below to use S3 backend (requires AWS credentials)
+# terraform {
+#   backend "s3" {
+#     bucket         = "ec2-shutdown-lambda-bucket"
+#     key            = "harness-cicd/terraform.tfstate"
+#     region         = "us-east-1"
+#     encrypt        = true
+#     dynamodb_table = "dyning_table"
+#   }
+# }
 
 # Option 2: GCS Backend (Google Cloud)
 # Recommended for GCP environments

@@ -129,7 +129,23 @@ After Terraform creates the secret placeholders, update them in Harness:
 2. Update `github_pat` with your GitHub Personal Access Token
 3. Update `docker_registry_password` with your Docker registry credentials
 
-### 7. Prepare Your Microservice Repository
+### 7. Configure GitHub Secrets (Required for GitHub Actions)
+
+To enable the Terraform GitHub Actions workflow, add your Harness API key as a GitHub secret:
+
+1. Go to your GitHub repository
+2. Navigate to **Settings > Secrets and variables > Actions**
+3. Click **New repository secret** and add:
+
+| Secret Name | Value | Required |
+|-------------|-------|----------|
+| `HARNESS_API_KEY` | Your Harness Platform API key | Yes |
+
+All other configuration values (account ID, repository, cluster details) are set as default values in `variables.tf` and can be overridden in your local `terraform.tfvars` file for development.
+
+**Note**: The GitHub Actions workflow uses the `TF_VAR_harness_api_key` environment variable to securely pass the API key to Terraform without committing it to version control.
+
+### 8. Prepare Your Microservice Repository
 
 Your Java microservice repository should include:
 
@@ -149,7 +165,7 @@ your-java-microservice/
 └── README.md
 ```
 
-### 8. Test the Pipeline
+### 9. Test the Pipeline
 
 1. Create a Pull Request in your microservice repository
 2. The CI pipeline should trigger automatically
@@ -233,8 +249,13 @@ The following issues have been fixed:
 1. **Port Alignment**: Updated application port from 8070 to 8080 to match Kubernetes deployment configuration
 2. **Health Checks**: Added Spring Boot Actuator dependency and configured health endpoints at `/health` for Spring Boot 1.5.x compatibility
 3. **Docker Registry Connector**: Added proper Docker registry connector in Terraform instead of incorrectly using GitHub connector for Docker images
-4. **GitHub Actions Fix**: Corrected syntax error in terraform.yml workflow and added proper working directory
+4. **GitHub Actions Fixes**:
+   - Corrected syntax error in terraform.yml workflow (`refs/heads/main`)
+   - Added proper working directory for Terraform commands
+   - Updated `hashicorp/setup-terraform` from v1 to v3 to fix deprecated set-output warnings
 5. **Terraform Variables**: Added new variables for Docker registry configuration (`docker_connector_id`, `docker_registry_url`, `docker_username`)
+6. **Backend Configuration**: Commented out S3 backend by default to use local state (simpler for initial setup)
+7. **Terraform Formatting**: Applied proper formatting to all Terraform files
 
 ### Known Limitations
 
