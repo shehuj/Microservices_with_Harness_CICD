@@ -17,5 +17,5 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - name: Build and Test
-        working-directory: ./Microservices_with_Harness_CICD
+        working-directory: ./Microservices_with_Harness_CICD/java-app
         run: mvn clean verify
