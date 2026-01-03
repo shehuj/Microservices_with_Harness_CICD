@@ -1,5 +1,3 @@
-# CI Pipeline - With GitHub Connector
-
 resource "harness_platform_pipeline" "ci_pipeline" {
   name       = "CI Java Microservice"
   identifier = "ci_java_microservice"
@@ -10,26 +8,33 @@ resource "harness_platform_pipeline" "ci_pipeline" {
 pipeline:
   name: CI Java Microservice
   identifier: ci_java_microservice
-  projectIdentifier: ${var.project_id}
   orgIdentifier: ${var.org_id}
+  projectIdentifier: ${var.project_id}
+
   properties:
     ci:
       codebase:
         connectorRef: github_conn
         repoName: ${var.github_repo}
         build: <+input>
+
   variables:
     - name: branch
       type: String
-      description: Branch to build from
-      required: true
-      value: <+input>.default(main).allowedValues(main,dev)
+      value: <+input>
+      default: "main"
+      allowedValues:
+        - "main"
+        - "dev"
+
     - name: DOCKER_REGISTRY
       type: String
       value: ${var.docker_registry}
+
     - name: SERVICE_NAME
       type: String
       value: ${var.service_name}
+
   stages:
     - stage:
         name: Build
@@ -37,33 +42,23 @@ pipeline:
         type: CI
         spec:
           cloneCodebase: true
+
           infrastructure:
             type: KubernetesDirect
             spec:
               connectorRef: ${var.k8s_connector_id}
               namespace: ${var.namespace}
+
           execution:
             steps:
               - step:
-                  type: GitClone
-                  name: Clone Repository
-                  identifier: clone_repo
-                  spec:
-                    connectorRef: github_conn
-                    build:
-                      type: branch
-                      spec:
-                        branch: <+pipeline.variables.branch>
-              - step:
-                  type: Run
                   name: Build and Test
                   identifier: build_test
+                  type: Run
                   spec:
-                    connectorRef: ${var.k8s_connector_id}
-                    image: maven:3-openjdk-8
+                    image: maven:3.9.6-eclipse-temurin-17
                     shell: Bash
                     command: |
-                      cd java-app
                       mvn clean verify
                   timeout: 10m
                   failureStrategies:
@@ -75,49 +70,23 @@ pipeline:
                           spec:
                             retryCount: 1
                             retryIntervals:
-                              - 10s
+                              - "10s"
                             onRetryFailure:
                               action:
                                 type: Abort
+
               - step:
-                  type: Run
-                  name: Build Docker
-                  identifier: build_docker
+                  name: Build and Push Docker Image
+                  identifier: build_push
+                  type: BuildAndPushDockerRegistry
                   spec:
-                    connectorRef: ${var.k8s_connector_id}
-                    image: docker:latest
-                    shell: Bash
-                    envVariables:
-                      IMAGE: <+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>:<+pipeline.sequenceId>
-                    command: |
-                      cd java-app
-                      docker build -t \$IMAGE .
-                  timeout: 10m
-                  failureStrategies:
-                    - onFailure:
-                        errors:
-                          - AllErrors
-                        action:
-                          type: Retry
-                          spec:
-                            retryCount: 1
-                            retryIntervals:
-                              - 10s
-                            onRetryFailure:
-                              action:
-                                type: Abort
-              - step:
-                  type: Run
-                  name: Push Docker
-                  identifier: push_docker
-                  spec:
-                    connectorRef: ${var.k8s_connector_id}
-                    image: docker:latest
-                    shell: Bash
-                    envVariables:
-                      IMAGE: <+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>:<+pipeline.sequenceId>
-                    command: |
-                      docker push \$IMAGE
+                    connectorRef: docker_registry_conn
+                    repo: "<+pipeline.variables.SERVICE_NAME>"
+                    tags:
+                      - "<+pipeline.sequenceId>"
+                    dockerfile: "Dockerfile"
+                    context: "."
+
                   timeout: 10m
                   failureStrategies:
                     - onFailure:
@@ -128,16 +97,18 @@ pipeline:
                           spec:
                             retryCount: 2
                             retryIntervals:
-                              - 10s
-                              - 20s
+                              - "10s"
+                              - "20s"
                             onRetryFailure:
                               action:
                                 type: Abort
+
         failureStrategies:
           - onFailure:
               errors:
                 - AllErrors
               action:
                 type: Abort
- EOT
+
+  EOT
 }
