@@ -15,8 +15,8 @@ pipeline:
   properties:
     ci:
       codebase:
-        connectorRef: ${var.github_connector_id}
-        repoName: ${var.github_repo}
+        connectorRef: github_conn
+        repoName: shehuj/Microservices_with_Harness_CICD
         build: <+input>
   variables:
     - name: branch
@@ -49,7 +49,7 @@ pipeline:
                   name: Clone Repository
                   identifier: clone_repo
                   spec:
-                    connectorRef: ${var.github_connector_id}
+                    connectorRef: github_conn
                     build:
                       type: branch
                       spec:
