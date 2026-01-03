@@ -14,6 +14,35 @@ Delegate(s) don't have selectors [k8s]
 
 ### Step 1: Install Harness Delegate
 
+**NEW: You can now provision the delegate via Terraform!**
+
+#### Option A: Via Terraform (Recommended - Automated)
+
+1. **Get delegate token** from Harness UI:
+   - Go to: Account Settings > Account Resources > Delegates > Tokens
+   - Click "+ New Token"
+   - Name it `terraform-delegate-token` and generate
+   - Copy the token
+
+2. **Add token to `terraform.tfvars`**:
+   ```hcl
+   harness_delegate_token = "YOUR_TOKEN_HERE"
+   ```
+
+3. **Run Terraform** (will create delegate automatically):
+   ```bash
+   terraform apply
+   ```
+
+4. **Verify** delegate is running:
+   ```bash
+   kubectl get pods -n harness-delegate-ng
+   ```
+
+See `DELEGATE_TOKEN_SETUP.md` for detailed instructions.
+
+#### Option B: Manual Installation (Original Method)
+
 1. **Go to Harness UI**: https://app.harness.io
 2. **Navigate**: Account Settings > Account Resources > Delegates
 3. **Click**: "+ New Delegate"
