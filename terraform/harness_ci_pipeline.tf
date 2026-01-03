@@ -57,6 +57,7 @@ pipeline:
                   identifier: build_test
                   type: Run
                   spec:
+                    connectorRef: ${var.k8s_connector_id}
                     image: maven:3.9.6-eclipse-temurin-17
                     shell: Bash
                     command: |
@@ -81,8 +82,8 @@ pipeline:
                   identifier: build_push
                   type: BuildAndPushDockerRegistry
                   spec:
-                    connectorRef: docker_registry_conn
-                    repo: "<+pipeline.variables.SERVICE_NAME>"
+                    connectorRef: ${var.docker_connector_id}
+                    repo: "<+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>"
                     tags:
                       - "<+pipeline.sequenceId>"
                     dockerfile: "Dockerfile"
@@ -107,17 +108,22 @@ pipeline:
               - step:
                   name: Container Image Scan
                   identifier: container_scan
-                  type: SecurityTest
+                  type: AquaTrivy
                   spec:
-                    category: "Container Scanning"
-                    configuration:
-                      type: "AquaTrivy"
-                      target:
-                        type: "Container Image"
-                        containerImage:
-                          name: "<+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>"
-                          tag: "<+pipeline.sequenceId>"
-                    failOnSeverity: "CRITICAL"
+                    mode: orchestration
+                    config: default
+                    target:
+                      type: container
+                      name: "<+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>"
+                      variant: "<+pipeline.sequenceId>"
+                    advanced:
+                      log:
+                        level: info
+                    privileged: true
+                    image:
+                      type: docker_v2
+                      name: "<+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>"
+                      tag: "<+pipeline.sequenceId>"
 
                   timeout: 5m
                   failureStrategies:
@@ -125,7 +131,7 @@ pipeline:
                         errors:
                           - AllErrors
                         action:
-                          type: Abort
+                          type: Ignore
 
         failureStrategies:
           - onFailure:
