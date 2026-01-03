@@ -138,12 +138,13 @@ To enable the Terraform GitHub Actions workflow with S3 backend, add these secre
 3. Click **New repository secret** and add each of these:
 
 | Secret Name | Value | Required | Purpose |
-|-------------|-------|----------|---------|
+| ----------- | ----- | -------- | ------- |
 | `HARNESS_API_KEY` | Your Harness Platform API key | Yes | Harness authentication |
 | `AWS_ACCESS_KEY_ID` | Your AWS access key ID | Yes | S3 backend access |
 | `AWS_SECRET_ACCESS_KEY` | Your AWS secret access key | Yes | S3 backend access |
 
 **Note**: The workflow uses the S3 backend configured in `terraform/backend.tf`:
+
 - Bucket: `ec2-shutdown-lambda-bucket`
 - DynamoDB table: `dyning_table` (for state locking)
 - Region: `us-east-1`
@@ -251,23 +252,79 @@ Steps:
 
 The following issues have been fixed:
 
-1. **Port Alignment**: Updated application port from 8070 to 8080 to match Kubernetes deployment configuration
-2. **Health Checks**: Added Spring Boot Actuator dependency and configured health endpoints at `/health` for Spring Boot 1.5.x compatibility
-3. **Docker Registry Connector**: Added proper Docker registry connector in Terraform instead of incorrectly using GitHub connector for Docker images
-4. **GitHub Actions Fixes**:
-   - Corrected syntax error in terraform.yml workflow (`refs/heads/main`)
-   - Added proper working directory for Terraform commands
+#### Application Configuration
+
+1. **Port Alignment**: Updated application port from 8070 to 8080 to match Kubernetes deployment configuration in `java-app/src/main/resources/application.properties`
+2. **Health Checks**: Added Spring Boot Actuator dependency to `pom.xml` and configured health endpoints at `/health` for Spring Boot 1.5.x compatibility in `k8s/deployment.yaml`
+3. **Maven Dependencies**:
+   - Fixed MySQL connector version from 8.0.34 to 8.0.33 (8.0.34 not available in Maven Central)
+   - Removed explicit H2 database version to use Spring Boot-managed version (2.2.224 incompatible with Spring Boot 1.5.3)
+
+#### Terraform Configuration
+
+1. **Directory Structure**: Moved all Terraform resources from nested `harness/` and `harness/cd/` directories to root `terraform/` directory for proper loading
+2. **Connector Identifiers**: Changed from hyphenated to underscored format (github-conn → github_conn, k8s-conn → k8s_conn, docker-conn → docker_conn)
+3. **Docker Registry Connector**: Added proper Docker registry connector configuration (`harness_connectors.tf`) instead of incorrectly using GitHub connector for Docker images
+4. **Secrets Management**: Changed from `harness_platform_encrypted_text` to `harness_platform_secret_text` for compatibility
+5. **Variables**: Added new variables for Docker registry configuration (`docker_connector_id`, `docker_registry_url`, `docker_username`)
+6. **Backend Configuration**: Enabled S3 backend with proper configuration in `backend.tf`
+
+#### Pipeline Configuration
+
+1. **CI Pipeline**:
+   - Added step identifiers (build_test, build_docker, push_docker)
+   - Added failure strategies for error handling
+   - Added branch selector variable for dev/main branch selection
+   - Added connector and image references for Run steps
+2. **CD Pipeline**:
+   - Added branch selector variable for dev/main branch selection
+   - Fixed infrastructure definition with inline configuration and identifier
+   - Removed codebase configuration (not needed for deployment pipelines)
+   - Added proper failure strategies
+3. **Triggers**: Fixed GitHub PR trigger action names (Opened → Open, Reopened → Reopen)
+
+#### GitHub Actions
+
+1. **Workflow Fixes**:
+   - Corrected syntax error in terraform.yml workflow (`refs/heads/"main"` → `refs/heads/main`)
+   - Added proper working directory for Terraform commands (`working-directory: terraform`)
    - Updated `hashicorp/setup-terraform` from v1 to v3 to fix deprecated set-output warnings
-5. **Terraform Variables**: Added new variables for Docker registry configuration (`docker_connector_id`, `docker_registry_url`, `docker_username`)
-6. **Backend Configuration**: Commented out S3 backend by default to use local state (simpler for initial setup)
-7. **Terraform Formatting**: Applied proper formatting to all Terraform files
+   - Added AWS credentials environment variables for S3 backend (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION)
+
+#### Resources Created in Harness
+
+The following resources were successfully created in Harness via Terraform:
+
+- ✅ Secrets: github_pat, docker_registry_password
+- ✅ Kubernetes Connector: k8s_conn
+- ✅ CI Pipeline: ci_java_microservice
+- ✅ CD Pipeline: cd_deploy_java_microservice
+- ✅ Service: java_microservice
+- ✅ Environment: staging
+- ✅ GitHub PR Trigger: github_pr_trigger
 
 ### Known Limitations
 
-1. **Spring Boot Version**: The shopping cart demo app uses Spring Boot 1.5.3.RELEASE (2017), which is EOL and may contain security vulnerabilities. Consider upgrading to Spring Boot 2.x or 3.x for production use.
-2. **Hardcoded Credentials**: Admin credentials are hardcoded in application.properties. Use environment variables for production deployments.
-3. **Auto-Apply Risk**: The GitHub Actions workflow automatically applies Terraform changes on push to main without manual approval. Consider adding a manual approval step for production environments.
-4. **Resource Limits**: Kubernetes deployment has conservative memory limits (512Mi) that may need adjustment for production Java workloads.
+1. **Harness Provider Bug**: The Harness Terraform provider v0.39.4 has a known bug (`json: cannot unmarshal number into Go struct field Failure.code of type string`) that prevents creation of:
+   - GitHub connector
+   - Docker registry connector
+   - Infrastructure definitions
+
+   These resources have been disabled in Terraform (`.tf.disabled` files) and must be created manually in the Harness UI or via API until the provider is updated.
+
+2. **Spring Boot Version**: The shopping cart demo app uses Spring Boot 1.5.3.RELEASE (2017), which is EOL and may contain security vulnerabilities. Consider upgrading to Spring Boot 2.x or 3.x for production use.
+
+3. **Hardcoded Credentials**: Admin credentials are hardcoded in `application.properties`. Use environment variables for production deployments.
+
+4. **Auto-Apply Risk**: The GitHub Actions workflow automatically applies Terraform changes on push to main without manual approval. Consider adding a manual approval step for production environments.
+
+5. **Resource Limits**: Kubernetes deployment has conservative memory limits (512Mi) that may need adjustment for production Java workloads.
+
+6. **Security**: The Harness API key was previously committed to Git history in `variables.tf`. If you used this repository before 2026-01-02, you should:
+   - Revoke the old API key in Harness
+   - Generate a new API key
+   - Update `terraform.tfvars` with the new key
+   - Never commit `terraform.tfvars` to Git (it's in `.gitignore`)
 
 ## Configuration Reference
 
