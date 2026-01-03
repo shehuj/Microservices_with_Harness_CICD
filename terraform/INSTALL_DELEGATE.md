@@ -12,6 +12,12 @@ A Harness delegate is a service that runs in your infrastructure and connects to
 
 **You MUST have at least one delegate installed** for Harness to execute pipelines.
 
+## ⚠️ CRITICAL: Delegate Tag Required
+
+**Your delegate MUST have the tag `k8s`** for the Terraform-created K8s connector to work.
+
+When installing the delegate, you MUST add the tag `k8s` in the Tags/Selectors field.
+
 ## Quick Install (Kubernetes)
 
 ### Option 1: Install via Harness UI (Recommended)
@@ -27,7 +33,7 @@ A Harness delegate is a service that runs in your infrastructure and connects to
 3. **Configure Delegate**:
    - Name: `harness-delegate` (or your preferred name)
    - Size: **Small** (for testing) or **Large** (for production)
-   - Tags: Leave empty or add `k8s` if you want to use specific delegate selectors
+   - **Tags: `k8s`** ⚠️ REQUIRED - You MUST add this tag!
    - Click **Continue**
 
 4. **Download YAML**:

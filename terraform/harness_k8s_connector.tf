@@ -5,12 +5,17 @@ resource "harness_platform_connector_kubernetes" "k8s" {
   project_id = var.project_id
 
   inherit_from_delegate {
-    delegate_selectors = []
+    delegate_selectors = [var.delegate_selector]
   }
 }
 
-# Note: delegate_selectors is set to empty array to use any available delegate
-# If you want to use a specific delegate:
-# 1. Install a Harness delegate in your cluster
-# 2. Tag it with a selector (e.g., "k8s")
-# 3. Update delegate_selectors = [var.delegate_selector]
+# IMPORTANT: You must install a Harness delegate with the tag "k8s"
+#
+# Quick steps:
+# 1. Go to Harness UI > Account Settings > Delegates > New Delegate
+# 2. Choose Kubernetes delegate
+# 3. Name it "harness-delegate" and add tag "k8s"
+# 4. Download and apply the YAML to your cluster
+# 5. Wait for delegate to show as "Connected" in Harness UI
+#
+# See INSTALL_DELEGATE.md for detailed instructions
