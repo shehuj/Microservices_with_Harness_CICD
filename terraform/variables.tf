@@ -118,9 +118,10 @@ variable "docker_username" {
 }
 # Delegate Configuration
 variable "harness_delegate_token" {
-  description = "Harness delegate token for authentication"
+  description = "Harness delegate token for authentication (optional - only needed if deploying delegate via Terraform)"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "delegate_name" {
@@ -139,4 +140,10 @@ variable "kubeconfig_path" {
   description = "Path to kubeconfig file"
   type        = string
   default     = "~/.kube/config"
+}
+
+variable "deploy_delegate" {
+  description = "Whether to deploy delegate via Terraform (set to false to skip delegate deployment)"
+  type        = bool
+  default     = true
 }

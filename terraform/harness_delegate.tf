@@ -1,8 +1,18 @@
 # Harness Delegate Provisioning
 #
 # This deploys a Harness delegate to your Kubernetes cluster with the "k8s" tag
+#
+# To enable delegate deployment:
+# 1. Get delegate token from Harness UI (see DELEGATE_TOKEN_SETUP.md)
+# 2. Add to terraform.tfvars: harness_delegate_token = "YOUR_TOKEN"
+# 3. Run: terraform apply
+#
+# To skip delegate deployment:
+# Add to terraform.tfvars: deploy_delegate = false
 
 resource "helm_release" "harness_delegate" {
+  count = var.deploy_delegate && var.harness_delegate_token != "" ? 1 : 0
+
   name             = "harness-delegate"
   repository       = "https://app.harness.io/storage/harness-download/harness-helm-charts/"
   chart            = "harness-delegate-ng"
@@ -76,15 +86,20 @@ resource "helm_release" "harness_delegate" {
 # Output delegate information
 output "delegate_namespace" {
   description = "Namespace where delegate is deployed"
-  value       = helm_release.harness_delegate.namespace
+  value       = var.deploy_delegate && var.harness_delegate_token != "" ? helm_release.harness_delegate[0].namespace : "N/A - Delegate not deployed"
 }
 
 output "delegate_name" {
   description = "Name of the delegate"
-  value       = var.delegate_name
+  value       = var.deploy_delegate && var.harness_delegate_token != "" ? var.delegate_name : "N/A - Delegate not deployed"
 }
 
 output "delegate_tag" {
   description = "Tag assigned to the delegate"
   value       = var.delegate_selector
+}
+
+output "delegate_deployed" {
+  description = "Whether delegate was deployed via Terraform"
+  value       = var.deploy_delegate && var.harness_delegate_token != ""
 }
