@@ -1,18 +1,4 @@
-# CI Pipeline - Codebase configuration removed due to provider bug
-#
-# IMPORTANT: After creating GitHub connector via CREATE_CONNECTORS_WORKAROUND.sh:
-# 1. Add properties.ci.codebase section after orgIdentifier
-# 2. Change cloneCodebase from false to true
-#
-# properties:
-#   ci:
-#     codebase:
-#       connectorRef: ${var.github_connector_id}
-#       repoName: ${var.github_repo}
-#       build: <+input>
-#
-# And in the Build stage spec, change:
-#   cloneCodebase: false  -->  cloneCodebase: true
+# CI Pipeline - With GitHub Connector
 
 resource "harness_platform_pipeline" "ci_pipeline" {
   name       = "CI Java Microservice"
@@ -26,6 +12,12 @@ pipeline:
   identifier: ci_java_microservice
   projectIdentifier: ${var.project_id}
   orgIdentifier: ${var.org_id}
+  properties:
+    ci:
+      codebase:
+        connectorRef: ${var.github_connector_id}
+        repoName: ${var.github_repo}
+        build: <+input>
   variables:
     - name: branch
       type: String
@@ -44,7 +36,7 @@ pipeline:
         identifier: Build
         type: CI
         spec:
-          cloneCodebase: false
+          cloneCodebase: true
           infrastructure:
             type: KubernetesDirect
             spec:
@@ -52,6 +44,16 @@ pipeline:
               namespace: ${var.namespace}
           execution:
             steps:
+              - step:
+                  type: GitClone
+                  name: Clone Repository
+                  identifier: clone_repo
+                  spec:
+                    connectorRef: ${var.github_connector_id}
+                    build:
+                      type: branch
+                      spec:
+                        branch: <+pipeline.variables.branch>
               - step:
                   type: Run
                   name: Build and Test
