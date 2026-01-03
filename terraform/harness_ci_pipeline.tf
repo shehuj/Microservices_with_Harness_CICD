@@ -61,6 +61,7 @@ pipeline:
                     image: maven:3.9.6-eclipse-temurin-17
                     shell: Bash
                     command: |
+                      cd java-app
                       mvn clean verify
                   timeout: 10m
                   failureStrategies:
