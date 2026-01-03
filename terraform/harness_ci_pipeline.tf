@@ -1,3 +1,16 @@
+# CI Pipeline - Codebase configuration removed due to provider bug
+# After creating GitHub connector via CREATE_CONNECTORS_WORKAROUND.sh script,
+# add the properties.ci.codebase section back to enable code checkout:
+#
+# properties:
+#   ci:
+#     codebase:
+#       connectorRef: ${var.github_connector_id}
+#       repoName: ${var.github_repo}
+#       build: <+input>
+#
+# Insert the above section after orgIdentifier and before variables
+
 resource "harness_platform_pipeline" "ci_pipeline" {
   name       = "CI Java Microservice"
   identifier = "ci_java_microservice"
@@ -7,15 +20,9 @@ resource "harness_platform_pipeline" "ci_pipeline" {
   yaml = <<-EOT
 pipeline:
   name: CI Java Microservice
-  identifier: ci_java_microservice
+  identifier = "ci_java_microservice"
   projectIdentifier: ${var.project_id}
   orgIdentifier: ${var.org_id}
-  properties:
-    ci:
-      codebase:
-        connectorRef: ${var.github_connector_id}
-        repoName: ${var.github_repo}
-        build: <+input>
   variables:
     - name: branch
       type: String
