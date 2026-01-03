@@ -10,7 +10,7 @@ resource "harness_platform_connector_github" "github" {
 
   credentials {
     http {
-      username  = var.github_repo
+      username  = "git"
       token_ref = harness_platform_secret_text.github_pat.identifier
     }
   }
