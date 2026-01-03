@@ -20,16 +20,15 @@ output "cd_pipeline_identifier" {
 }
 
 # Connector Outputs
-# Uncomment after creating connectors via CREATE_CONNECTORS_WORKAROUND.sh
-# output "github_connector_id" {
-#   description = "ID of the GitHub connector"
-#   value       = harness_platform_connector_github.github.id
-# }
-#
-# output "github_connector_identifier" {
-#   description = "Identifier of the GitHub connector"
-#   value       = harness_platform_connector_github.github.identifier
-# }
+output "github_connector_id" {
+  description = "ID of the GitHub connector"
+  value       = harness_platform_connector_github.github.id
+}
+
+output "github_connector_identifier" {
+  description = "Identifier of the GitHub connector"
+  value       = harness_platform_connector_github.github.identifier
+}
 
 output "k8s_connector_id" {
   description = "ID of the Kubernetes connector"
@@ -41,15 +40,15 @@ output "k8s_connector_identifier" {
   value       = harness_platform_connector_kubernetes.k8s.identifier
 }
 
-# output "docker_connector_id" {
-#   description = "ID of the Docker connector"
-#   value       = harness_platform_connector_docker.docker_registry.id
-# }
-#
-# output "docker_connector_identifier" {
-#   description = "Identifier of the Docker connector"
-#   value       = harness_platform_connector_docker.docker_registry.identifier
-# }
+output "docker_connector_id" {
+  description = "ID of the Docker connector"
+  value       = harness_platform_connector_docker.docker_registry.id
+}
+
+output "docker_connector_identifier" {
+  description = "Identifier of the Docker connector"
+  value       = harness_platform_connector_docker.docker_registry.identifier
+}
 
 # Trigger Outputs
 output "github_trigger_id" {
@@ -94,13 +93,12 @@ output "environment_identifier" {
   value       = harness_platform_environment.env.identifier
 }
 
-# Uncomment after creating infrastructure via CREATE_CONNECTORS_WORKAROUND.sh
-# output "infrastructure_id" {
-#   description = "ID of the infrastructure definition"
-#   value       = harness_platform_infrastructure.infra.id
-# }
-#
-# output "infrastructure_identifier" {
-#   description = "Identifier of the infrastructure definition"
-#   value       = harness_platform_infrastructure.infra.identifier
-# }
+output "infrastructure_id" {
+  description = "ID of the infrastructure definition"
+  value       = harness_platform_infrastructure.infra.id
+}
+
+output "infrastructure_identifier" {
+  description = "Identifier of the infrastructure definition"
+  value       = harness_platform_infrastructure.infra.identifier
+}
