@@ -112,7 +112,7 @@ variable "docker_registry_url" {
 variable "docker_username" {
   description = "Docker registry username"
   type        = string
-  default     = ""
+  default     = "captcloud01"
 }
 # Delegate Configuration
 variable "harness_delegate_token" {
