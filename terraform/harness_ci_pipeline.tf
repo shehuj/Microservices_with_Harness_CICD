@@ -61,6 +61,7 @@ pipeline:
                     image: maven:3-openjdk-8
                     shell: Bash
                     command: |
+                      cd java-app
                       mvn clean verify
               - step:
                   type: Run
@@ -73,6 +74,7 @@ pipeline:
                     envVariables:
                       IMAGE: <+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>:<+pipeline.sequenceId>
                     command: |
+                      cd java-app
                       docker build -t \$IMAGE .
               - step:
                   type: Run
