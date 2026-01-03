@@ -16,7 +16,7 @@ pipeline:
     ci:
       codebase:
         connectorRef: github_conn
-        repoName: shehuj/Microservices_with_Harness_CICD
+        repoName: ${var.github_repo}
         build: <+input>
   variables:
     - name: branch
