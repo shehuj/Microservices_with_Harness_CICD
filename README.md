@@ -268,6 +268,7 @@ The following issues have been fixed:
 4. **Secrets Management**: Changed from `harness_platform_encrypted_text` to `harness_platform_secret_text` for compatibility
 5. **Variables**: Added new variables for Docker registry configuration (`docker_connector_id`, `docker_registry_url`, `docker_username`)
 6. **Backend Configuration**: Enabled S3 backend with proper configuration in `backend.tf`
+7. **Service Definition**: Removed Kubernetes manifest configuration from `harness_cd_service.tf` (requires GitHub connector which must be created manually)
 
 #### Pipeline Configuration
 
@@ -311,6 +312,12 @@ The following resources were successfully created in Harness via Terraform:
    - Infrastructure definitions
 
    These resources have been disabled in Terraform (`.tf.disabled` files) and must be created manually in the Harness UI or via API until the provider is updated.
+
+   **Additionally**, due to the missing GitHub connector, you must manually add Kubernetes manifests to the service:
+   1. In Harness UI, navigate to Services > java_microservice > Configuration > Manifests
+   2. Click "Add Manifest" > Select "K8s Manifest"
+   3. Choose Git as the store type and select your GitHub connector
+   4. Set branch to "main" and add paths: `k8s/deployment.yaml`, `k8s/service.yaml`
 
 2. **Spring Boot Version**: The shopping cart demo app uses Spring Boot 1.5.3.RELEASE (2017), which is EOL and may contain security vulnerabilities. Consider upgrading to Spring Boot 2.x or 3.x for production use.
 
