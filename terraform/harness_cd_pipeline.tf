@@ -10,12 +10,6 @@ pipeline:
   identifier: cd_deploy_java_microservice
   projectIdentifier: ${var.project_id}
   orgIdentifier: ${var.org_id}
-  properties:
-    ci:
-      codebase:
-        connectorRef: ${var.github_connector_id}
-        repoName: ${var.github_repo}
-        build: <+input>
   variables:
     - name: branch
       type: String
