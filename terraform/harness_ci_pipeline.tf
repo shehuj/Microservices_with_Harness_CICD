@@ -51,6 +51,7 @@ pipeline:
 
           execution:
             steps:
+
               - step:
                   name: Build and Test
                   identifier: build_test
@@ -102,6 +103,23 @@ pipeline:
                             onRetryFailure:
                               action:
                                 type: Abort
+
+              - step:
+                  name: Scan with Trivy
+                  identifier: scan_trivy
+                  type: Run
+                  spec:
+                    image: aquasec/trivy:latest
+                    shell: Bash
+                    command: |
+                      trivy image --exit-code 1 --severity HIGH,CRITICAL <+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>:<+pipeline.sequenceId>
+                  timeout: 5m
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - AllErrors
+                        action:
+                          type: Continue
 
         failureStrategies:
           - onFailure:
