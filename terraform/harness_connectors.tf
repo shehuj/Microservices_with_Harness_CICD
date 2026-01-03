@@ -11,7 +11,7 @@ resource "harness_platform_connector_github" "github" {
   credentials {
     http {
       username  = var.github_repo
-      token_ref = "${var.org_id}.${var.project_id}.${harness_platform_secret_text.github_pat.identifier}"
+      token_ref = harness_platform_secret_text.github_pat.identifier
     }
   }
 }
@@ -26,6 +26,6 @@ resource "harness_platform_connector_docker" "docker_registry" {
 
   credentials {
     username     = var.docker_username
-    password_ref = "${var.org_id}.${var.project_id}.${harness_platform_secret_text.docker_registry_password.identifier}"
+    password_ref = harness_platform_secret_text.docker_registry_password.identifier
   }
 }

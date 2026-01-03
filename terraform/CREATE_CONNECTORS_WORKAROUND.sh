@@ -12,17 +12,15 @@
 # - HARNESS_ACCOUNT_ID environment variable set
 # - jq installed for JSON processing
 
-set -e
-
-# Load variables from terraform.tfvars
-HARNESS_ACCOUNT_ID="${HARNESS_ACCOUNT_ID:-$(grep 'harness_account_id' terraform.tfvars | cut -d '=' -f2 | tr -d ' "')}"
-HARNESS_API_KEY="${HARNESS_API_KEY:-$(grep 'harness_api_key' terraform.tfvars | cut -d '=' -f2 | tr -d ' "')}"
-ORG_ID="${ORG_ID:-$(grep 'org_id' terraform.tfvars | cut -d '=' -f2 | tr -d ' "')}"
-PROJECT_ID="${PROJECT_ID:-$(grep 'project_id' terraform.tfvars | cut -d '=' -f2 | tr -d ' "')}"
-GITHUB_REPO="${GITHUB_REPO:-$(grep 'github_repo' terraform.tfvars | cut -d '=' -f2 | tr -d ' "')}"
-DOCKER_USERNAME="${DOCKER_USERNAME:-$(grep 'docker_username' terraform.tfvars | cut -d '=' -f2 | tr -d ' "')}"
-DOCKER_REGISTRY_URL="${DOCKER_REGISTRY_URL:-$(grep 'docker_registry_url' terraform.tfvars | cut -d '=' -f2 | tr -d ' "')}"
-NAMESPACE="${NAMESPACE:-$(grep 'namespace' terraform.tfvars | cut -d '=' -f2 | tr -d ' "')}"
+# Load variables from terraform.tfvars (strip comments first)
+HARNESS_ACCOUNT_ID="${HARNESS_ACCOUNT_ID:-$(grep 'harness_account_id' terraform.tfvars | cut -d '=' -f2 | cut -d '#' -f1 | tr -d ' "')}"
+HARNESS_API_KEY="${HARNESS_API_KEY:-$(grep 'harness_api_key' terraform.tfvars | cut -d '=' -f2 | cut -d '#' -f1 | tr -d ' "')}"
+ORG_ID="${ORG_ID:-$(grep 'org_id' terraform.tfvars | cut -d '=' -f2 | cut -d '#' -f1 | tr -d ' "')}"
+PROJECT_ID="${PROJECT_ID:-$(grep 'project_id' terraform.tfvars | cut -d '=' -f2 | cut -d '#' -f1 | tr -d ' "')}"
+GITHUB_REPO="${GITHUB_REPO:-$(grep 'github_repo' terraform.tfvars | cut -d '=' -f2 | cut -d '#' -f1 | tr -d ' "')}"
+DOCKER_USERNAME="${DOCKER_USERNAME:-$(grep 'docker_username' terraform.tfvars | cut -d '=' -f2 | cut -d '#' -f1 | tr -d ' "')}"
+DOCKER_REGISTRY_URL="${DOCKER_REGISTRY_URL:-$(grep 'docker_registry_url' terraform.tfvars | cut -d '=' -f2 | cut -d '#' -f1 | tr -d ' "')}"
+NAMESPACE="${NAMESPACE:-$(grep 'namespace' terraform.tfvars | cut -d '=' -f2 | cut -d '#' -f1 | tr -d ' "')}"
 
 HARNESS_API="https://app.harness.io/gateway/ng/api"
 
@@ -39,98 +37,66 @@ echo ""
 create_github_connector() {
     echo "Creating GitHub Connector..."
 
-    curl -X POST "${HARNESS_API}/connectors" \
+    RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST "${HARNESS_API}/connectors?accountIdentifier=${HARNESS_ACCOUNT_ID}&orgIdentifier=${ORG_ID}&projectIdentifier=${PROJECT_ID}" \
         -H "Content-Type: application/json" \
         -H "x-api-key: ${HARNESS_API_KEY}" \
-        -d "{
-            \"connector\": {
-                \"name\": \"GitHub Connector\",
-                \"identifier\": \"github_conn\",
-                \"description\": \"GitHub connector for repository access\",
-                \"orgIdentifier\": \"${ORG_ID}\",
-                \"projectIdentifier\": \"${PROJECT_ID}\",
-                \"type\": \"Github\",
-                \"spec\": {
-                    \"url\": \"https://github.com\",
-                    \"validationRepo\": \"${GITHUB_REPO}\",
-                    \"authentication\": {
-                        \"type\": \"Http\",
-                        \"spec\": {
-                            \"type\": \"UsernameToken\",
-                            \"spec\": {
-                                \"username\": \"${GITHUB_REPO}\",
-                                \"tokenRef\": \"${ORG_ID}.${PROJECT_ID}.github_pat\"
-                            }
-                        }
-                    },
-                    \"apiAccess\": null,
-                    \"delegateSelectors\": [],
-                    \"executeOnDelegate\": false,
-                    \"type\": \"Account\"
-                }
-            }
-        }"
+        -d "{\"connector\":{\"name\":\"GitHub Connector\",\"identifier\":\"github_conn\",\"description\":\"GitHub connector for repository access\",\"orgIdentifier\":\"${ORG_ID}\",\"projectIdentifier\":\"${PROJECT_ID}\",\"type\":\"Github\",\"spec\":{\"url\":\"https://github.com\",\"validationRepo\":\"${GITHUB_REPO}\",\"authentication\":{\"type\":\"Http\",\"spec\":{\"type\":\"UsernameToken\",\"spec\":{\"username\":\"${GITHUB_REPO}\",\"tokenRef\":\"${ORG_ID}.${PROJECT_ID}.github_pat\"}}},\"apiAccess\":null,\"delegateSelectors\":[],\"executeOnDelegate\":false,\"type\":\"Account\"}}}")
 
-    echo ""
-    echo "✓ GitHub Connector created"
+    HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE" | cut -d':' -f2)
+    BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE/d')
+
+    if echo "$BODY" | grep -q '"status":"SUCCESS"'; then
+        echo "✓ GitHub Connector created successfully"
+    elif echo "$BODY" | grep -q '"code":"DUPLICATE_FIELD"'; then
+        echo "⚠ GitHub Connector already exists"
+    else
+        echo "Error creating GitHub Connector (HTTP $HTTP_CODE):"
+        echo "$BODY"
+    fi
 }
 
 # Function to create Docker connector
 create_docker_connector() {
     echo "Creating Docker Registry Connector..."
 
-    curl -X POST "${HARNESS_API}/connectors" \
+    RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST "${HARNESS_API}/connectors?accountIdentifier=${HARNESS_ACCOUNT_ID}&orgIdentifier=${ORG_ID}&projectIdentifier=${PROJECT_ID}" \
         -H "Content-Type: application/json" \
         -H "x-api-key: ${HARNESS_API_KEY}" \
-        -d "{
-            \"connector\": {
-                \"name\": \"Docker Registry Connector\",
-                \"identifier\": \"docker_conn\",
-                \"description\": \"Docker registry connector for image storage\",
-                \"orgIdentifier\": \"${ORG_ID}\",
-                \"projectIdentifier\": \"${PROJECT_ID}\",
-                \"type\": \"DockerRegistry\",
-                \"spec\": {
-                    \"dockerRegistryUrl\": \"${DOCKER_REGISTRY_URL}\",
-                    \"providerType\": \"DockerHub\",
-                    \"auth\": {
-                        \"type\": \"UsernamePassword\",
-                        \"spec\": {
-                            \"username\": \"${DOCKER_USERNAME}\",
-                            \"passwordRef\": \"${ORG_ID}.${PROJECT_ID}.docker_registry_password\"
-                        }
-                    },
-                    \"delegateSelectors\": [],
-                    \"executeOnDelegate\": false
-                }
-            }
-        }"
+        -d "{\"connector\":{\"name\":\"Docker Registry Connector\",\"identifier\":\"docker_conn\",\"description\":\"Docker registry connector for image storage\",\"orgIdentifier\":\"${ORG_ID}\",\"projectIdentifier\":\"${PROJECT_ID}\",\"type\":\"DockerRegistry\",\"spec\":{\"dockerRegistryUrl\":\"${DOCKER_REGISTRY_URL}\",\"providerType\":\"DockerHub\",\"auth\":{\"type\":\"UsernamePassword\",\"spec\":{\"username\":\"${DOCKER_USERNAME}\",\"passwordRef\":\"${ORG_ID}.${PROJECT_ID}.docker_registry_password\"}},\"delegateSelectors\":[],\"executeOnDelegate\":false}}}")
 
-    echo ""
-    echo "✓ Docker Registry Connector created"
+    HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE" | cut -d':' -f2)
+    BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE/d')
+
+    if echo "$BODY" | grep -q '"status":"SUCCESS"'; then
+        echo "✓ Docker Registry Connector created successfully"
+    elif echo "$BODY" | grep -q '"code":"DUPLICATE_FIELD"'; then
+        echo "⚠ Docker Registry Connector already exists"
+    else
+        echo "Error creating Docker Registry Connector (HTTP $HTTP_CODE):"
+        echo "$BODY"
+    fi
 }
 
 # Function to create infrastructure
 create_infrastructure() {
     echo "Creating Infrastructure Definition..."
 
-    curl -X POST "${HARNESS_API}/infrastructures" \
+    YAML_CONTENT="infrastructureDefinition:\\n  name: Staging Kubernetes\\n  identifier: staging_k8s\\n  orgIdentifier: ${ORG_ID}\\n  projectIdentifier: ${PROJECT_ID}\\n  environmentRef: staging\\n  deploymentType: Kubernetes\\n  type: KubernetesDirect\\n  spec:\\n    connectorRef: k8s_conn\\n    namespace: ${NAMESPACE}\\n    releaseName: release-<+INFRA_KEY>"
+
+    RESPONSE=$(curl -s -X POST "${HARNESS_API}/infrastructures?accountIdentifier=${HARNESS_ACCOUNT_ID}" \
         -H "Content-Type: application/json" \
         -H "x-api-key: ${HARNESS_API_KEY}" \
-        -d "{
-            \"identifier\": \"staging_k8s\",
-            \"orgIdentifier\": \"${ORG_ID}\",
-            \"projectIdentifier\": \"${PROJECT_ID}\",
-            \"environmentRef\": \"staging\",
-            \"name\": \"Staging Kubernetes\",
-            \"description\": \"Kubernetes infrastructure for staging\",
-            \"tags\": {},
-            \"type\": \"KubernetesDirect\",
-            \"yaml\": \"infrastructureDefinition:\\n  name: Staging Kubernetes\\n  identifier: staging_k8s\\n  orgIdentifier: ${ORG_ID}\\n  projectIdentifier: ${PROJECT_ID}\\n  environmentRef: staging\\n  deploymentType: Kubernetes\\n  type: KubernetesDirect\\n  spec:\\n    connectorRef: k8s_conn\\n    namespace: ${NAMESPACE}\\n    releaseName: release-<+INFRA_KEY>\"
-        }"
+        -d "{\"identifier\":\"staging_k8s\",\"orgIdentifier\":\"${ORG_ID}\",\"projectIdentifier\":\"${PROJECT_ID}\",\"environmentRef\":\"staging\",\"name\":\"Staging Kubernetes\",\"description\":\"Kubernetes infrastructure for staging\",\"tags\":{},\"type\":\"KubernetesDirect\",\"yaml\":\"${YAML_CONTENT}\"}")
 
-    echo ""
-    echo "✓ Infrastructure Definition created"
+    if echo "$RESPONSE" | grep -q '"status":"SUCCESS"'; then
+        echo "✓ Infrastructure Definition created successfully"
+    elif echo "$RESPONSE" | grep -q '"code":"DUPLICATE_FIELD"'; then
+        echo "⚠ Infrastructure Definition already exists"
+    else
+        echo "Error creating Infrastructure Definition:"
+        echo "$RESPONSE"
+        return 1
+    fi
 }
 
 # Main execution
