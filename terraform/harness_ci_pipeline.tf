@@ -70,7 +70,7 @@ pipeline:
                           type: Retry
                           spec:
                             retryCount: 1
-                            retryIntervals:
+                            retryIntervals: 
                               - "10s"
                             onRetryFailure:
                               action:
@@ -105,21 +105,27 @@ pipeline:
                                 type: Abort
 
               - step:
-                  name: Scan with Trivy
-                  identifier: scan_trivy
-                  type: Run
+                  name: Container Image Scan
+                  identifier: container_scan
+                  type: SecurityTest
                   spec:
-                    image: aquasec/trivy:latest
-                    shell: Bash
-                    command: |
-                      trivy image --exit-code 1 --severity HIGH,CRITICAL <+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>:<+pipeline.sequenceId>
+                    category: "Container Scanning"
+                    configuration:
+                      type: "AquaTrivy"
+                      target:
+                        type: "Container Image"
+                        containerImage:
+                          name: "<+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>"
+                          tag: "<+pipeline.sequenceId>"
+                    failOnSeverity: "CRITICAL"
+
                   timeout: 5m
                   failureStrategies:
                     - onFailure:
                         errors:
                           - AllErrors
                         action:
-                          type: Continue
+                          type: Abort
 
         failureStrategies:
           - onFailure:
