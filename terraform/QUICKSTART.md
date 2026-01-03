@@ -111,8 +111,34 @@ If you want to use a different tag (e.g., "production"):
 Once your delegate is running with the "k8s" tag:
 
 ✅ Terraform can create/update K8s connector
-✅ CI pipelines can build your code
-✅ CD pipelines can deploy to Kubernetes
-✅ All Harness tasks will execute successfully
+✅ Basic pipelines are created
+⚠️ CI pipeline won't clone code yet (see note below)
+⚠️ Service won't have manifests yet (see note below)
 
-**Total Time:** ~5 minutes to install delegate + 2 minutes for it to connect
+### ⚠️ Important Limitation
+
+Due to the Harness provider bug, the CI pipeline is created with:
+- `cloneCodebase: false` (temporarily disabled)
+- No codebase configuration
+
+**This means the CI pipeline will be created but won't actually checkout or build code yet.**
+
+### To Enable Full CI Pipeline
+
+After creating the GitHub connector (via `CREATE_CONNECTORS_WORKAROUND.sh`):
+
+1. Edit `harness_ci_pipeline.tf`
+2. Add the `properties.ci.codebase` section (see comments in file)
+3. Change `cloneCodebase: false` to `cloneCodebase: true`
+4. Run `terraform apply`
+
+OR configure the codebase directly in Harness UI:
+1. Go to Pipelines > ci_java_microservice > Edit
+2. Add codebase configuration in the pipeline properties
+3. Save
+
+**Total Time:**
+- ~5 minutes to install delegate
+- ~2 minutes for delegate to connect
+- ~5 minutes to create GitHub connector via API script
+- ~2 minutes to update CI pipeline with codebase

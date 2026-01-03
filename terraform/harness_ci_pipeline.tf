@@ -1,6 +1,8 @@
 # CI Pipeline - Codebase configuration removed due to provider bug
-# After creating GitHub connector via CREATE_CONNECTORS_WORKAROUND.sh script,
-# add the properties.ci.codebase section back to enable code checkout:
+#
+# IMPORTANT: After creating GitHub connector via CREATE_CONNECTORS_WORKAROUND.sh:
+# 1. Add properties.ci.codebase section after orgIdentifier
+# 2. Change cloneCodebase from false to true
 #
 # properties:
 #   ci:
@@ -9,7 +11,8 @@
 #       repoName: ${var.github_repo}
 #       build: <+input>
 #
-# Insert the above section after orgIdentifier and before variables
+# And in the Build stage spec, change:
+#   cloneCodebase: false  -->  cloneCodebase: true
 
 resource "harness_platform_pipeline" "ci_pipeline" {
   name       = "CI Java Microservice"
@@ -41,7 +44,7 @@ pipeline:
         identifier: Build
         type: CI
         spec:
-          cloneCodebase: true
+          cloneCodebase: false
           infrastructure:
             type: KubernetesDirect
             spec:
