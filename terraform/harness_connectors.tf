@@ -17,12 +17,15 @@ resource "harness_platform_connector_github" "github" {
 }
 
 resource "harness_platform_connector_docker" "docker_registry" {
-  identifier = var.docker_connector_id
-  name       = "Docker Registry Connector"
-  org_id     = var.org_id
-  project_id = var.project_id
-  type       = "DockerHub"
-  url        = var.docker_registry_url
+  identifier         = var.docker_connector_id
+  name               = "Docker Registry Connector"
+  org_id             = var.org_id
+  project_id         = var.project_id
+  type               = "DockerHub"
+  url                = var.docker_registry_url
+  delegate_selectors = []
+
+  depends_on = [harness_platform_secret_text.docker_registry_password]
 
   credentials {
     username     = var.docker_username

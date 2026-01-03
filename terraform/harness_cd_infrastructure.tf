@@ -9,11 +9,14 @@ resource "harness_platform_infrastructure" "infra" {
     infrastructureDefinition:
       name: Staging Kubernetes
       identifier: staging_k8s
+      orgIdentifier: ${var.org_id}
+      projectIdentifier: ${var.project_id}
       environmentRef: staging
       deploymentType: Kubernetes
       type: KubernetesDirect
       spec:
         connectorRef: ${var.k8s_connector_id}
         namespace: ${var.namespace}
+        releaseName: release-<+INFRA_KEY>
   EOT
 }
