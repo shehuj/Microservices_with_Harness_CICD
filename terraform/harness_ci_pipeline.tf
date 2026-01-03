@@ -65,6 +65,20 @@ pipeline:
                     command: |
                       cd java-app
                       mvn clean verify
+                  timeout: 10m
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - AllErrors
+                        action:
+                          type: Retry
+                          spec:
+                            retryCount: 1
+                            retryIntervals:
+                              - 10s
+                            onRetryFailure:
+                              action:
+                                type: Abort
               - step:
                   type: Run
                   name: Build Docker
@@ -78,6 +92,20 @@ pipeline:
                     command: |
                       cd java-app
                       docker build -t \$IMAGE .
+                  timeout: 10m
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - AllErrors
+                        action:
+                          type: Retry
+                          spec:
+                            retryCount: 1
+                            retryIntervals:
+                              - 10s
+                            onRetryFailure:
+                              action:
+                                type: Abort
               - step:
                   type: Run
                   name: Push Docker
@@ -90,6 +118,21 @@ pipeline:
                       IMAGE: <+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>:<+pipeline.sequenceId>
                     command: |
                       docker push \$IMAGE
+                  timeout: 10m
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - AllErrors
+                        action:
+                          type: Retry
+                          spec:
+                            retryCount: 2
+                            retryIntervals:
+                              - 10s
+                              - 20s
+                            onRetryFailure:
+                              action:
+                                type: Abort
         failureStrategies:
           - onFailure:
               errors:
