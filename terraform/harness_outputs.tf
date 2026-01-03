@@ -93,12 +93,13 @@ output "environment_identifier" {
   value       = harness_platform_environment.env.identifier
 }
 
-output "infrastructure_id" {
-  description = "ID of the infrastructure definition"
-  value       = harness_platform_infrastructure.infra.id
-}
+# Infrastructure is defined inline in CD pipeline, not as separate resource
+# output "infrastructure_id" {
+#   description = "ID of the infrastructure definition"
+#   value       = harness_platform_infrastructure.infra.id
+# }
 
-output "infrastructure_identifier" {
-  description = "Identifier of the infrastructure definition"
-  value       = harness_platform_infrastructure.infra.identifier
-}
+# output "infrastructure_identifier" {
+#   description = "Identifier of the infrastructure definition"
+#   value       = harness_platform_infrastructure.infra.identifier
+# }
