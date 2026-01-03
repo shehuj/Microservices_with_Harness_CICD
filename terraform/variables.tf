@@ -116,3 +116,27 @@ variable "docker_username" {
   type        = string
   default     = ""
 }
+# Delegate Configuration
+variable "harness_delegate_token" {
+  description = "Harness delegate token for authentication"
+  type        = string
+  sensitive   = true
+}
+
+variable "delegate_name" {
+  description = "Name of the Harness delegate"
+  type        = string
+  default     = "harness-delegate"
+}
+
+variable "delegate_replicas" {
+  description = "Number of delegate replicas"
+  type        = number
+  default     = 1
+}
+
+variable "kubeconfig_path" {
+  description = "Path to kubeconfig file"
+  type        = string
+  default     = "~/.kube/config"
+}
