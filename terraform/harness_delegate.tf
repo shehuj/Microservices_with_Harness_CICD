@@ -87,11 +87,13 @@ resource "helm_release" "harness_delegate" {
 output "delegate_namespace" {
   description = "Namespace where delegate is deployed"
   value       = var.deploy_delegate && var.harness_delegate_token != "" ? helm_release.harness_delegate[0].namespace : "N/A - Delegate not deployed"
+  sensitive   = true
 }
 
 output "delegate_name" {
   description = "Name of the delegate"
   value       = var.deploy_delegate && var.harness_delegate_token != "" ? var.delegate_name : "N/A - Delegate not deployed"
+  sensitive   = true
 }
 
 output "delegate_tag" {
@@ -102,4 +104,5 @@ output "delegate_tag" {
 output "delegate_deployed" {
   description = "Whether delegate was deployed via Terraform"
   value       = var.deploy_delegate && var.harness_delegate_token != ""
+  sensitive   = true
 }
