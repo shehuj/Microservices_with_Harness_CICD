@@ -37,7 +37,7 @@ resource "helm_release" "harness_delegate" {
 
   set {
     name  = "managerEndpoint"
-    value = "https://app.harness.io/gratis"
+    value = var.harness_manager_endpoint
   }
 
   set {
@@ -47,7 +47,7 @@ resource "helm_release" "harness_delegate" {
 
   set {
     name  = "replicas"
-    value = var.delegate_replicas
+    value = tostring(var.delegate_replicas)
   }
 
   set {

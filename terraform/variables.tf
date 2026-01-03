@@ -67,13 +67,11 @@ variable "cluster_region" {
   default     = "us-east-1"
 }
 
-/*
 variable "cluster_project_id" {
   description = "Cloud provider project ID"
   type        = string
+  default     = ""
 }
-
-*/
 
 variable "service_name" {
   description = "Name of the microservice"
@@ -96,7 +94,7 @@ variable "default_branch" {
 variable "delegate_selector" {
   description = "Harness delegate selector tag"
   type        = string
-  default     = "helm-delegate"
+  default     = "k8s"
 }
 
 variable "docker_connector_id" {
@@ -146,4 +144,10 @@ variable "deploy_delegate" {
   description = "Whether to deploy delegate via Terraform (set to false to skip delegate deployment)"
   type        = bool
   default     = true
+}
+
+variable "harness_manager_endpoint" {
+  description = "Harness manager endpoint (use 'gratis' for free tier, or your specific endpoint)"
+  type        = string
+  default     = "https://app.harness.io/gratis"
 }
