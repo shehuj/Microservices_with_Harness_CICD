@@ -94,7 +94,7 @@ variable "default_branch" {
 variable "delegate_selector" {
   description = "Harness delegate selector tag"
   type        = string
-  default     = "k8s"
+  default     = "helm-delegate"
 }
 
 variable "docker_connector_id" {
