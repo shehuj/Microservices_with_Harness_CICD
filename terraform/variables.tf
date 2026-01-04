@@ -131,7 +131,7 @@ variable "delegate_name" {
 variable "delegate_replicas" {
   description = "Number of delegate replicas"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "kubeconfig_path" {

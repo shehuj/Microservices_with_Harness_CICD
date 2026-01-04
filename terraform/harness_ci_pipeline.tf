@@ -84,7 +84,7 @@ pipeline:
                   type: BuildAndPushDockerRegistry
                   spec:
                     connectorRef: ${var.docker_connector_id}
-                    repo: "<+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>"
+                    repo: "${var.docker_username}/<+pipeline.variables.SERVICE_NAME>"
                     tags:
                       - "<+pipeline.sequenceId>"
                     dockerfile: "java-app/Dockerfile"
