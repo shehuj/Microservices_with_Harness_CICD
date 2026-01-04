@@ -58,7 +58,7 @@ pipeline:
                   type: Run
                   spec:
                     connectorRef: ${var.k8s_connector_id}
-                    image: maven:3.9.6-eclipse-temurin-17
+                    image: maven:3-openjdk-8
                     shell: Bash
                     command: |
                       cd java-app
@@ -84,7 +84,7 @@ pipeline:
                   type: BuildAndPushDockerRegistry
                   spec:
                     connectorRef: ${var.docker_connector_id}
-                    repo: "<+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>"
+                    repo: "${var.docker_username}/<+pipeline.variables.SERVICE_NAME>"
                     tags:
                       - "<+pipeline.sequenceId>"
                     dockerfile: "java-app/Dockerfile"
