@@ -58,7 +58,7 @@ pipeline:
                   type: Run
                   spec:
                     connectorRef: ${var.k8s_connector_id}
-                    image: maven:3.9.6-eclipse-temurin-17
+                    image: maven:3-openjdk-8
                     shell: Bash
                     command: |
                       cd java-app
