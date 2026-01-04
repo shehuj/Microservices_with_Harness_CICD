@@ -87,8 +87,8 @@ pipeline:
                     repo: "<+pipeline.variables.DOCKER_REGISTRY>/<+pipeline.variables.SERVICE_NAME>"
                     tags:
                       - "<+pipeline.sequenceId>"
-                    dockerfile: "Dockerfile"
-                    context: "."
+                    dockerfile: "java-app/Dockerfile"
+                    context: "java-app"
 
                   timeout: 10m
                   failureStrategies:
