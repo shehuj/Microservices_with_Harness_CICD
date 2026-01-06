@@ -6,7 +6,7 @@ resource "harness_platform_connector_github" "github" {
   url                = "https://github.com"
   validation_repo    = var.github_repo
   connection_type    = "Account"
-  delegate_selectors = [helm-delegate]
+  delegate_selectors = ["helm-delegate"]
 
   credentials {
     http {
