@@ -16,7 +16,7 @@ resource "harness_platform_service" "service" {
               type: DockerRegistry
               spec:
                 connectorRef: ${var.docker_connector_id}
-                imagePath: ${var.docker_registry}/${var.service_name}
+                imagePath: ${var.docker_username}/${var.service_name}
                 tag: <+input>
           manifests:
             - manifest:
