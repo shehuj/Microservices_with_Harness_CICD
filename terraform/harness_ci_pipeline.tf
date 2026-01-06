@@ -47,7 +47,7 @@ pipeline:
             type: KubernetesDirect
             spec:
               connectorRef: ${var.k8s_connector_id}
-              namespace: ${var.namespace}
+              namespace: harness
 
           execution:
             steps:
