@@ -36,13 +36,8 @@ pipeline:
           environment:
             environmentRef: staging
             deployToAll: false
-            infrastructureDefinition:
-              identifier: staging_infra
-              type: KubernetesDirect
-              spec:
-                connectorRef: ${var.k8s_connector_id}
-                namespace: ${var.namespace}
-                releaseName: release-<+INFRA_KEY>
+            infrastructureDefinitions:
+              - identifier: staging_infra
           execution:
             steps:
               - step:
