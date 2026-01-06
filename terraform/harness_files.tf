@@ -38,3 +38,17 @@ resource "harness_platform_file_store_file" "service_yaml" {
   file_usage        = "MANIFEST_FILE"
   mime_type         = "text/yaml"
 }
+
+# Upload namespace.yaml to Harness File Store
+resource "harness_platform_file_store_file" "namespace_yaml" {
+  org_id            = var.org_id
+  project_id        = var.project_id
+  identifier        = "namespace_yaml"
+  name              = "namespace.yaml"
+  description       = "Kubernetes Namespace manifest"
+  tags              = ["k8s", "namespace"]
+  parent_identifier = harness_platform_file_store_folder.k8s.identifier
+  file_content_path = "${path.module}/../k8s/namespace.yaml"
+  file_usage        = "MANIFEST_FILE"
+  mime_type         = "text/yaml"
+}
