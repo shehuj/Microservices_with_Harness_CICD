@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: java-microservice
+  namespace: cart-app
   labels:
     app: java-microservice
 spec:
@@ -16,7 +17,7 @@ spec:
     spec:
       containers:
       - name: java-microservice
-        image: <+artifacts.primary.image>
+        image: captcloud01/java-microservice:latest
         ports:
         - containerPort: 8080
           protocol: TCP
