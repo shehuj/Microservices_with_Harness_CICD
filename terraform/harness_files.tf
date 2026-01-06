@@ -21,6 +21,7 @@ resource "harness_platform_file_store_file" "deployment_yaml" {
   tags              = ["k8s", "deployment"]
   parent_identifier = harness_platform_file_store_folder.k8s.identifier
   file_content_path = "${path.module}/../k8s/deployment.yaml"
+  file_usage        = "MANIFEST_FILE"
   mime_type         = "text/yaml"
 }
 
@@ -34,5 +35,6 @@ resource "harness_platform_file_store_file" "service_yaml" {
   tags              = ["k8s", "service"]
   parent_identifier = harness_platform_file_store_folder.k8s.identifier
   file_content_path = "${path.module}/../k8s/service.yaml"
+  file_usage        = "MANIFEST_FILE"
   mime_type         = "text/yaml"
 }
