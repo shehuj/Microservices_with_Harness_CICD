@@ -13,11 +13,12 @@ resource "harness_platform_service" "service" {
         spec:
           artifacts:
             primary:
+              primaryArtifactRef: <+input>
               type: DockerRegistry
               spec:
                 connectorRef: ${var.docker_connector_id}
                 imagePath: ${var.docker_username}/${var.service_name}
-                tag: <+input>
+                tag: <+input>.regex(^[a-zA-Z0-9_.-]+$)
           manifests:
             - manifest:
                 identifier: k8s_manifests
