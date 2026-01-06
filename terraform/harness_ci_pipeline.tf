@@ -35,6 +35,11 @@ pipeline:
       type: String
       value: ${var.service_name}
 
+    - name: IMAGE_TAG
+      type: String
+      value: <+pipeline.sequenceId>
+      description: "Docker image tag (build number)"
+
   stages:
     - stage:
         name: Build
