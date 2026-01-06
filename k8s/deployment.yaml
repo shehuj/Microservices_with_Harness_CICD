@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: java-microservice
-        image: captcloud01/java-microservice:latest
+        image: captcloud01/java-microservice
         ports:
         - containerPort: 8080
           protocol: TCP
