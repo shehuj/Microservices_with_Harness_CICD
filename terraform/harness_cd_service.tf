@@ -24,12 +24,10 @@ resource "harness_platform_service" "service" {
                 type: K8sManifest
                 spec:
                   store:
-                    type: Git
+                    type: Harness
                     spec:
-                      connectorRef: ${var.github_connector_id}
-                      gitFetchType: Branch
-                      branch: ${var.default_branch}
-                      paths:
-                        - k8s/
+                      files:
+                        - /k8s/deployment.yaml
+                        - /k8s/service.yaml
   EOT
 }
