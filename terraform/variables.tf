@@ -35,7 +35,7 @@ variable "github_repo" {
 variable "github_connector_id" {
   description = "Identifier for the GitHub connector"
   type        = string
-  default     = ["github_conn", "helm-delegate"]
+  default     = ["helm-delegate"]
 }
 
 variable "k8s_connector_id" {
