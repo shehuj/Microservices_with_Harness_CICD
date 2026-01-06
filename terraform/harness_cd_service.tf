@@ -20,7 +20,7 @@ resource "harness_platform_service" "service" {
                 tag: <+input>.regex(^[a-zA-Z0-9_.-]+$)
           manifests:
             - manifest:
-                identifier: deployment_files
+                identifier: k8s_files
                 type: K8sManifest
                 spec:
                   store:
@@ -30,8 +30,6 @@ resource "harness_platform_service" "service" {
                       gitFetchType: Branch
                       branch: ${var.default_branch}
                       paths:
-                        - k8s/deployment.yaml
-                        - k8s/service.yaml
-                  skipResourceVersioning: false
+                        - k8s/
   EOT
 }
