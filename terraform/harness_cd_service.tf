@@ -13,7 +13,6 @@ resource "harness_platform_service" "service" {
         spec:
           artifacts:
             primary:
-              primaryArtifactRef: <+input>
               type: DockerRegistry
               spec:
                 connectorRef: ${var.docker_connector_id}
