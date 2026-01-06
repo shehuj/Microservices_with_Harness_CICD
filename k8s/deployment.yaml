@@ -6,7 +6,7 @@ metadata:
   labels:
     app: java-microservice
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: java-microservice
@@ -23,14 +23,14 @@ spec:
           protocol: TCP
         env:
         - name: JAVA_OPTS
-          value: "-Xmx512m -Xms256m"
+          value: "-Xmx200m -Xms128m"
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "250m"
+            memory: "128Mi"
+            cpu: "100m"
           limits:
-            memory: "512Mi"
-            cpu: "500m"
+            memory: "256Mi"
+            cpu: "200m"
         livenessProbe:
           httpGet:
             path: /health
