@@ -20,8 +20,8 @@ resource "harness_platform_service" "service" {
                 tag: <+input>
           manifests:
             - manifest:
+                identifier: k8s_manifests
                 type: K8sManifest
-                identifier: k8s_manifest
                 spec:
                   store:
                     type: Git
