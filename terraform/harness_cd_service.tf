@@ -20,7 +20,7 @@ resource "harness_platform_service" "service" {
                 tag: <+input>.regex(^[a-zA-Z0-9_.-]+$)
           manifests:
             - manifest:
-                identifier: k8s_manifests
+                identifier: deployment_files
                 type: K8sManifest
                 spec:
                   store:
@@ -32,5 +32,6 @@ resource "harness_platform_service" "service" {
                       paths:
                         - k8s/deployment.yaml
                         - k8s/service.yaml
+                  skipResourceVersioning: false
   EOT
 }
