@@ -27,6 +27,7 @@ resource "harness_platform_service" "service" {
                     type: Harness
                     spec:
                       files:
+                        - /k8s/namespace.yaml
                         - /k8s/deployment.yaml
                         - /k8s/service.yaml
   EOT
