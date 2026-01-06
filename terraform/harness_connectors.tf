@@ -23,7 +23,7 @@ resource "harness_platform_connector_docker" "docker_registry" {
   project_id         = var.project_id
   type               = "DockerHub"
   url                = var.docker_registry_url
-  delegate_selectors = []
+  delegate_selectors = ["helm-delegate"]
 
   depends_on = [harness_platform_secret_text.docker_registry_password]
 
